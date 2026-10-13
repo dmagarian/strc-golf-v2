@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>STRC Open · Saylor's Minute Drive</title>
-<meta name="description" content="Every minute Michael Saylor tees off. STRC's price vs its $100 par sets his accuracy, trading volume sets his power. Live 3D golf tracker." />
-<meta property="og:title" content="STRC Open · Saylor's Minute Drive" />
-<meta property="og:description" content="STRC at par = pure drive. Below par = bunkers, water, trees… or a whiff. Volume pumping = hole-in-one. Live every minute." />
+<title>STRC Open · Michael Saylor's Minute Drive</title>
+<meta name="description" content="Every minute a bitcoin CEO tees off: Michael Saylor for STRC, Matt Cole for SATA. Price vs the $100 par sets accuracy, trading volume sets power. Live 3D golf tracker." />
+<meta property="og:title" content="STRC Open · Saylor & Cole's Minute Drive" />
+<meta property="og:description" content="Pick STRC (Michael Saylor) or SATA (Matt Cole). At par = pure drive. Below par = bunkers, water, trees… or a whiff. Volume pumping = hole-in-one." />
 <meta property="og:type" content="website" />
 <meta property="og:image" content="https://dmagarian.github.io/strc-golf-v2/preview.png" />
 <meta name="twitter:card" content="summary_large_image" />
@@ -16,7 +16,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;1,800;1,900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
 <style>
 :root{
-  --btc:#f7931a; --btc2:#ffb347; --ink:#eef3f7; --mut:#9fb0bf; --dim:#6b7c8c;
+  --btc:#f7931a; --btc2:#ffb347; --acc1:#ffb347; --acc2:#f7931a; --acc3:#c86f06; --ink:#eef3f7; --mut:#9fb0bf; --dim:#6b7c8c;
   --panel:rgba(9,15,23,.74); --line:rgba(255,255,255,.09);
   --good:#3ddc84; --warn:#f2c14e; --bad:#ff5d5d;
   --cond:'Barlow Condensed',system-ui,sans-serif; --ui:'Inter',system-ui,-apple-system,sans-serif; --mono:'JetBrains Mono',ui-monospace,Menlo,monospace;
@@ -27,25 +27,46 @@ html,body{height:100%;overflow:hidden;background:#0b1118;color:var(--ink);font-f
 #stage canvas{display:block;width:100%;height:100%}
 .panel{background:var(--panel);backdrop-filter:blur(10px) saturate(1.2);-webkit-backdrop-filter:blur(10px) saturate(1.2);border:1px solid var(--line);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
 .hud{position:fixed;z-index:5}
-.ph{display:flex;justify-content:space-between;align-items:baseline;font:700 13px/1 var(--cond);letter-spacing:.16em;color:var(--mut);margin-bottom:8px}
-.ph span{font:500 11px var(--ui);letter-spacing:0;color:var(--dim)}
+.ph{display:flex;align-items:center;gap:8px;font:700 13px/1 var(--cond);letter-spacing:.16em;color:var(--mut);margin-bottom:8px}
+.ph span{margin-left:auto;font:500 11px var(--ui);letter-spacing:0;color:var(--dim)}
 label{font:600 10px/1 var(--ui);letter-spacing:.12em;color:var(--dim);text-transform:uppercase}
 
 /* columns */
 #leftCol{left:16px;top:14px;bottom:16px;width:258px;display:flex;flex-direction:column;gap:10px;pointer-events:none}
-#rightCol{right:16px;top:14px;width:316px;display:flex;flex-direction:column;gap:10px;max-height:calc(100vh - 252px);pointer-events:none}
+#rightCol{right:16px;top:14px;width:316px;display:flex;flex-direction:column;gap:10px;max-height:calc(100vh - var(--ctlH, 90px) - 46px);pointer-events:none}
 #leftCol>*,#rightCol>*{pointer-events:auto}
 
 #brand{display:flex;gap:12px;align-items:center}
-#brand .logo{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#ffb347,#f7931a 45%,#b45f00);display:grid;place-items:center;box-shadow:0 6px 22px rgba(247,147,26,.4);flex:none}
+#brand .logo{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--acc1),var(--acc2) 45%,var(--acc3));display:grid;place-items:center;box-shadow:0 6px 22px rgba(0,0,0,.35);flex:none}
 #brand .title{font:800 32px/0.95 var(--cond);letter-spacing:.05em;text-shadow:0 2px 10px rgba(0,0,0,.5)}
 #brand .title b{color:var(--btc)}
 #brand .sub{white-space:nowrap;font:600 12px/1.2 var(--cond);letter-spacing:.15em;color:#d5dee6;text-transform:uppercase;margin-top:4px;text-shadow:0 1px 4px rgba(0,0,0,.6)}
-#player{padding:10px 14px;display:flex;gap:11px;align-items:center}
-#player .av{width:36px;height:36px;border-radius:50%;background:radial-gradient(circle at 50% 38%,#f0c6a3 0 34%,transparent 35%),radial-gradient(circle at 50% 120%,#1b2233 0 58%,transparent 59%),#2a3446;flex:none;border:2px solid var(--btc);position:relative}
-#player .av:after{content:'';position:absolute;left:9px;right:9px;top:13px;height:3px;background:linear-gradient(90deg,#ff2a2a 0 30%,transparent 30% 70%,#ff2a2a 70%);border-radius:2px;opacity:var(--laser,0);box-shadow:0 0 8px #ff2a2a}
-.pname{font:700 18px/1 var(--cond);letter-spacing:.08em}
-.pstat{font:500 12px/1.3 var(--ui);color:var(--mut);margin-top:3px}
+#pickRow{display:flex;flex-direction:column;gap:5px}
+.picker{display:flex;align-items:center;gap:8px;width:max-content;max-width:100%;padding:4px 6px 4px 4px;border-radius:999px;background:var(--panel);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);box-shadow:0 6px 18px rgba(0,0,0,.3);cursor:pointer;text-transform:none;letter-spacing:0;color:#fff}
+.picker .av{width:32px;height:32px;border-radius:50%;flex:none;overflow:hidden;border:2px solid var(--acc2);position:relative}
+.picker .av svg{display:block;width:100%;height:100%}
+.picker .av:after{content:'';position:absolute;left:7px;right:7px;top:13px;height:3px;background:linear-gradient(90deg,#ff2a2a 0 30%,transparent 30% 70%,#ff2a2a 70%);border-radius:2px;opacity:var(--laser,0);box-shadow:0 0 8px #ff2a2a}
+#selTicker{width:auto;-webkit-appearance:none;appearance:none;background:transparent url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23fff' stroke-width='1.6' fill='none'/%3E%3C/svg%3E") no-repeat right 6px center;border:0;font:700 16px/1 var(--cond);letter-spacing:.06em;color:#fff;padding:6px 24px 6px 2px;cursor:pointer}
+#selTicker option{color:#111;background:#fff}
+.pstat{font:500 12px/1.3 var(--ui);color:#e3eaf0;text-shadow:0 1px 4px rgba(0,0,0,.75);margin-left:8px}
+#dock{display:flex;flex-wrap:wrap;gap:6px}
+.dockbtn{font:600 11px/1 var(--ui);letter-spacing:.02em;padding:7px 10px;border-radius:999px;background:rgba(9,15,23,.62);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--line);color:#dfe7ee;white-space:nowrap}
+.dockbtn[hidden]{display:none}
+[data-panel][hidden]{display:none !important}
+.pmin{flex:none;width:22px;height:22px;padding:0;margin-left:6px;border-radius:7px;font:700 10px/1 var(--ui);color:var(--mut);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+.pmin:hover{color:#fff;background:rgba(255,255,255,.14)}
+#lm .pmin{position:absolute;top:4px;right:4px;width:18px;height:18px;margin:0;font-size:9px;opacity:.65}
+#cleanBar{display:none;left:16px;top:14px;gap:8px;align-items:center}
+#miniQuote{font:700 13px/1 var(--mono);padding:8px 12px;border-radius:999px;background:rgba(9,15,23,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border:1px solid var(--line);text-shadow:0 1px 3px rgba(0,0,0,.5)}
+#miniSwing{display:none;right:16px;bottom:16px;width:58px;height:58px;border-radius:50%;padding:0;font-size:24px;background:linear-gradient(135deg,var(--acc1),var(--acc2) 55%,var(--acc3));border:0;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+body.clean #cleanBar{display:flex}
+body.clean #miniSwing{display:grid;place-items:center}
+body.clean #leftCol,body.clean #rightCol,body.clean #lm,body.clean #controls{display:none !important}
+.drawer{margin-top:10px}
+.drawer[hidden],.presets[hidden]{display:none}
+button.on{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.32)}
+.swingrow .icon{width:38px;height:44px;flex:none;font-size:16px}
+.swingrow .pmin{align-self:flex-start;width:20px;height:20px}
 #log{padding:11px 12px;flex:1 1 auto;min-height:120px;overflow:hidden;display:flex;flex-direction:column}
 #logList{list-style:none;overflow:hidden;display:flex;flex-direction:column;gap:5px}
 #logList li{display:grid;grid-template-columns:40px 1fr auto;gap:8px;align-items:center;font:500 12px var(--ui);padding:6px 8px;border-radius:8px;background:rgba(255,255,255,.035);animation:slidein .4s ease}
@@ -57,11 +78,12 @@ label{font:600 10px/1 var(--ui);letter-spacing:.12em;color:var(--dim);text-trans
 #logList li.empty{display:block;background:none;color:var(--dim);font-size:12px;padding:6px 2px}
 @keyframes slidein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 
-#mapBox{padding:10px 12px 12px;flex:none}
+#mapBox{padding:10px 12px 12px;flex:none;margin-top:auto}
 #minimap{display:block;width:120px;height:321px;border-radius:8px;margin:0 auto}
 
 #ticker{padding:14px 16px 12px}
-.trow{display:flex;justify-content:space-between;align-items:center}
+.trow{display:flex;align-items:center;gap:8px}
+.trow>div:first-child{margin-right:auto;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sym{font:800 22px/1 var(--cond);letter-spacing:.08em}
 .tname{font:500 11px var(--ui);color:var(--mut);margin-left:6px}
 .chip{font:700 10px/1 var(--ui);letter-spacing:.12em;padding:5px 8px;border-radius:999px;background:#33404d;color:#cfd8df;display:inline-flex;align-items:center;gap:6px}
@@ -81,11 +103,11 @@ label{font:600 10px/1 var(--ui);letter-spacing:.12em;color:var(--dim);text-trans
 .grid2{display:grid;grid-template-columns:1.15fr .85fr 1fr;gap:9px 10px;margin-top:11px}
 .grid2 b{display:block;font:700 15px/1.1 var(--mono);margin-top:4px}
 .tfoot{margin-top:10px;font:500 10.5px/1.35 var(--ui);color:var(--dim)}
-.swingrow{display:flex;gap:10px;align-items:center}
+.swingrow{display:flex;gap:8px;align-items:center}
 .swingrow .next{position:relative;width:46px;height:46px;flex:none}
 .swingrow .next svg{width:46px;height:46px;transform:rotate(-90deg)}
 .swingrow .next b{position:absolute;inset:0;display:grid;place-items:center;font:700 11px var(--mono)}
-.crow.sel{grid-template-columns:1fr 1fr 34px 34px 34px;gap:6px}
+.crow.sel{grid-template-columns:1fr 1fr 34px 34px;gap:6px;margin-top:0}
 button.icon{padding:7px 0;font-size:15px;line-height:1}
 .nextat{margin-top:7px;font:500 10.5px var(--ui);color:var(--dim)}
 
@@ -127,7 +149,7 @@ button.icon{padding:7px 0;font-size:15px;line-height:1}
 button{font:700 12px/1 var(--ui);letter-spacing:.06em;color:var(--ink);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:9px 10px;cursor:pointer;transition:background .2s,transform .1s}
 button:hover{background:rgba(255,255,255,.14)}
 button:active{transform:translateY(1px)}
-button.primary{width:100%;font:800 17px/1 var(--cond);letter-spacing:.14em;padding:12px;background:linear-gradient(135deg,#ffb347,#f7931a 55%,#d97a06);color:#1b1000;border:0;box-shadow:0 6px 18px rgba(247,147,26,.35)}
+button.primary{width:100%;min-width:0;white-space:nowrap;font:800 15px/1 var(--cond);letter-spacing:.04em;padding:13px 4px;background:linear-gradient(135deg,var(--acc1),var(--acc2) 55%,var(--acc3));color:#101208;border:0;box-shadow:0 6px 18px rgba(0,0,0,.3)}
 button.primary:hover{filter:brightness(1.07)}
 button.primary:disabled{filter:grayscale(.6) brightness(.8);cursor:default}
 .crow{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
@@ -143,7 +165,7 @@ select{font:600 12px var(--ui);color:var(--ink);background:#1a2430;border:1px so
 .sl label{display:flex;justify-content:space-between}
 .sl label b{font:700 12px var(--mono);color:#fff;letter-spacing:0}
 input[type=range]{width:100%;accent-color:var(--btc)}
-.presets{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.presets{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
 .presets button{font-size:11px;padding:7px 4px;white-space:nowrap}
 
 #banner{left:50%;top:34%;transform:translate(-50%,-50%) scale(.85);text-align:center;opacity:0;transition:opacity .35s,transform .45s cubic-bezier(.2,1.4,.4,1);pointer-events:none;--bc:#f7931a;width:min(92vw,900px)}
@@ -166,24 +188,22 @@ input[type=range]{width:100%;accent-color:var(--btc)}
 #loading .spin{width:42px;height:42px;border-radius:50%;border:3px solid rgba(247,147,26,.2);border-top-color:var(--btc);animation:sp 1s linear infinite;margin:0 auto 14px}
 @keyframes sp{to{transform:rotate(360deg)}}
 
-body.nopanels #log,body.nopanels #formula,body.nopanels #mapBox{display:none}
 @media (max-height:940px){.tprice{font-size:34px}#ticker{padding:12px 14px 10px}.prow{margin-top:8px}.grid2{margin-top:9px}#formula{padding:11px 14px 12px}.fsec+.fsec{margin-top:10px;padding-top:9px}#shotWhy{margin-top:6px}}
 @media (max-width:1480px){#lm{grid-template-columns:repeat(6,minmax(70px,auto))}#lm .c-club,#lm .c-spin{display:none}#lm .cell b{font-size:22px}}
-@media (max-width:1180px) and (min-width:761px){#log,#mapBox,#formula{display:none}body.panels #formula{display:block}#lm{bottom:auto;top:auto;bottom:250px}}
+@media (max-width:1180px) and (min-width:761px){#lm{bottom:calc(var(--ctlH,70px) + 30px)}}
 @media (max-width:760px){
-  #leftCol{left:12px;right:12px;width:auto;top:10px;bottom:auto}
-  #brand .logo{width:38px;height:38px;border-radius:10px}#brand .logo svg{transform:scale(.8)}
-  #brand .title{font-size:24px}#brand .sub{font-size:10px;letter-spacing:.1em}
-  #player,#log,#mapBox{display:none}
-  #rightCol{left:12px;right:12px;width:auto;top:60px;max-height:none}
-  #ticker{padding:9px 12px 10px}#ticker .tname,#ticker .grid2,#ticker .tfoot{display:none}
-  .prow{margin-top:2px}.tprice{font-size:27px}.parrow{margin-top:6px;padding:5px 9px}
-  #formula,body.nopanels #formula{display:none}body.panels #formula{display:block;max-height:42vh}
-  #lm{left:12px;right:12px;width:auto;transform:none;top:auto;bottom:222px;grid-template-columns:repeat(4,1fr)}
+  #leftCol{left:10px;right:10px;width:auto;top:8px;bottom:auto;gap:7px}
+  #brand{gap:9px}#brand .logo{width:34px;height:34px;border-radius:9px}#brand .logo svg{transform:scale(.72)}
+  #brand .title{font-size:22px}#brand .sub{font-size:9.5px;letter-spacing:.08em}
+  #log,#mapBox,[data-show="log"],[data-show="map"]{display:none !important}
+  #rightCol{left:10px;right:10px;width:auto;top:auto;bottom:calc(var(--ctlH,62px) + 84px);max-height:calc(100vh - var(--ctlH,62px) - 250px)}
+  #ticker{padding:8px 12px 9px}#ticker .tname,#ticker .grid2,#ticker .tfoot{display:none}
+  .prow{margin-top:2px}.tprice{font-size:26px}.parrow{margin-top:5px;padding:4px 9px}
+  #lm{left:10px;right:10px;width:auto;transform:none;bottom:calc(var(--ctlH,62px) + 20px);grid-template-columns:repeat(4,1fr)}
   #lm .c-club,#lm .c-spin,#lm .c-launch,#lm .c-apex{display:none}
-  #lm .cell{padding:7px 4px 6px}#lm .cell b{font-size:19px;margin-top:3px}
-  #controls{left:12px;right:12px;width:auto;bottom:12px;padding:10px}
-  .presetsBox{margin-top:8px}.presets button{padding:6px 2px}
+  #lm .cell{padding:7px 4px 6px}#lm .cell b{font-size:18px;margin-top:3px}
+  #controls{left:10px;right:10px;width:auto;bottom:10px;padding:9px}
+  #cleanBar{left:10px;top:8px}#miniSwing{right:12px;bottom:12px}#toast{top:54px}
   #banner{top:40%}
 }
 </style>
@@ -201,27 +221,48 @@ body.nopanels #log,body.nopanels #formula,body.nopanels #mapBox{display:none}
   <div id="brand">
     <div class="logo"><svg width="26" height="30" viewBox="0 0 26 30"><path d="M5 2v26" stroke="#1b1000" stroke-width="3" stroke-linecap="round"/><path d="M6 3l16 6-16 6z" fill="#fff"/><ellipse cx="9" cy="28" rx="7" ry="1.6" fill="#1b1000" opacity=".5"/></svg></div>
     <div>
-      <div class="title">STRC <b>OPEN</b></div>
-      <div class="sub">Hole 21 · “The Stretch” · Par 4 · 330 yds</div>
+      <div class="title"><span id="brandSym">STRC</span> <b>OPEN</b></div>
+      <div class="sub" id="brandSub">Hole 21 · “The Stretch” · Par 4 · 330 yds</div>
     </div>
   </div>
-  <div class="panel" id="player">
-    <div class="av" id="avatar"></div>
-    <div><div class="pname">MICHAEL SAYLOR</div><div class="pstat" id="pstat">Warming up on the range…</div></div>
+  <div id="pickRow">
+    <label class="picker" title="Pick a stock. Each one has its own golfer.">
+      <span class="av" id="avatar"></span>
+      <select id="selTicker" aria-label="Stock and golfer">
+        <option value="STRC">STRC · Michael Saylor</option>
+        <option value="SATA">SATA · Matt Cole</option>
+      </select>
+    </label>
+    <div class="pstat" id="pstat">Warming up on the range…</div>
   </div>
-  <div class="panel" id="log">
-    <div class="ph">SHOT LOG <span>price → result</span></div>
+  <div id="dock">
+    <button id="btnClean" class="dockbtn" title="Hide every box (H)">👁 Clean view</button>
+    <button class="dockbtn" data-show="ticker" hidden>📈 Quote</button>
+    <button class="dockbtn" data-show="formula" hidden>ⓘ Formula</button>
+    <button class="dockbtn" data-show="log" hidden>📋 Shot log</button>
+    <button class="dockbtn" data-show="map" hidden>🗺 Hole map</button>
+    <button class="dockbtn" data-show="lm" hidden>📟 Launch monitor</button>
+    <button class="dockbtn" data-show="controls" hidden>⛳ Controls</button>
+  </div>
+  <div class="panel" id="log" data-panel="log">
+    <div class="ph">SHOT LOG <span>price → result</span><button class="pmin" data-hide="log" title="Hide">✕</button></div>
     <ol id="logList"><li class="empty">First drive coming up…</li></ol>
   </div>
-  <div class="panel" id="mapBox">
-    <div class="ph">HOLE 21 <span>par 4 · 330 yds</span></div>
+  <div class="panel" id="mapBox" data-panel="map">
+    <div class="ph">HOLE 21 <span>par 4 · 330 yds</span><button class="pmin" data-hide="map" title="Hide">✕</button></div>
     <canvas id="minimap" width="240" height="642"></canvas>
   </div>
 </div>
 
+<div class="hud" id="cleanBar">
+  <button id="btnShowHud" class="dockbtn" title="Show the HUD (H)">👁 Show HUD</button>
+  <span id="miniQuote">STRC $—</span>
+</div>
+<button class="hud" id="miniSwing" title="Swing now (Space)">⛳</button>
+
 <div class="hud" id="rightCol">
-  <div class="panel" id="ticker">
-    <div class="trow"><div><span class="sym">STRC</span><span class="tname">Strategy “Stretch” Preferred</span></div><span id="srcChip" class="chip">CONNECTING</span></div>
+  <div class="panel" id="ticker" data-panel="ticker">
+    <div class="trow"><div><span class="sym" id="tSym">STRC</span><span class="tname" id="tName">Strategy “Stretch” Preferred</span></div><span id="srcChip" class="chip">CONNECTING</span><button class="pmin" data-hide="ticker" title="Hide">✕</button></div>
     <div class="prow"><span id="tPrice" class="tprice">$—</span><span id="tChg" class="tchg">—</span></div>
     <div class="parrow"><span>vs <b>PAR</b> $100.00</span><span id="tPar" class="tpar">—</span></div>
     <div class="grid2">
@@ -231,10 +272,10 @@ body.nopanels #log,body.nopanels #formula,body.nopanels #mapBox{display:none}
     </div>
     <div class="tfoot"><span id="tNote">—</span> · 52-wk <span id="tRange">—</span></div>
   </div>
-  <div class="panel" id="formula">
-    <div class="ph">SWING FORMULA <span>how the market moves the club</span></div>
+  <div class="panel" id="formula" data-panel="formula">
+    <div class="ph">SWING FORMULA <span>how the market moves the club</span><button class="pmin" data-hide="formula" title="Hide">✕</button></div>
     <div class="fsec">
-      <div class="fh">ACCURACY<span>= STRC price vs $100 par</span></div>
+      <div class="fh">ACCURACY<span>= <b id="fSym">STRC</b> price vs $100 par</span></div>
       <div class="gauge" id="pGauge"><div class="gmark" id="pMark" style="left:90%"></div></div>
       <div class="gscale"><span>below $75</span><span>par $100</span></div>
       <ul id="bandList"></ul>
@@ -252,7 +293,7 @@ body.nopanels #log,body.nopanels #formula,body.nopanels #mapBox{display:none}
 
 <div class="hud" id="banner"><div class="bt" id="bTitle">PURE!</div><div class="bs" id="bSub">—</div><div class="bp" id="bPrice"></div></div>
 
-<div class="hud panel" id="lm">
+<div class="hud panel" id="lm" data-panel="lm">
   <div class="cell c-club"><label>Club speed</label><b id="mClub">—</b><i>mph</i></div>
   <div class="cell c-ball"><label>Ball speed</label><b id="mBall">—</b><i>mph</i></div>
   <div class="cell c-launch"><label>Launch</label><b id="mLaunch">—</b><i>deg</i></div>
@@ -261,34 +302,37 @@ body.nopanels #log,body.nopanels #formula,body.nopanels #mapBox{display:none}
   <div class="cell hl c-carry"><label>Carry</label><b id="mCarry">—</b><i>yds</i></div>
   <div class="cell hl c-total"><label>Total</label><b id="mTotal">—</b><i>yds</i></div>
   <div class="cell c-off"><label>Offline</label><b id="mOff">—</b><i>yds</i></div>
+  <button class="pmin" data-hide="lm" title="Hide">✕</button>
 </div>
 
-<div class="hud panel" id="controls">
+<div class="hud panel" id="controls" data-panel="controls">
   <div class="swingrow">
     <div class="next" title="Next automatic drive"><svg viewBox="0 0 42 42"><circle cx="21" cy="21" r="18" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="3.5"/><circle id="ring" cx="21" cy="21" r="18" fill="none" stroke="#f7931a" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="113.1" stroke-dashoffset="0"/></svg><b id="tCount">—</b></div>
     <button id="btnSwing" class="primary">⛳ SWING NOW</button>
+    <button id="btnGear" class="icon" title="Settings: data feed, auto drive, sound, camera">⚙️</button>
+    <button id="btnWhatIf" class="icon" title="Try a what-if shot">🎯</button>
+    <button class="pmin" data-hide="controls" title="Hide controls">✕</button>
   </div>
-  <div class="crow sel">
-    <select id="selMode" title="Data feed: live STRC quotes, a scripted demo tour, or manual sliders"><option value="live">📡 Live</option><option value="demo">🎬 Demo</option><option value="manual">🎚 Manual</option></select>
-    <select id="selInt" title="How often Saylor drives automatically"><option value="60">⏱ 1 min</option><option value="30">⏱ 30 s</option><option value="15">⏱ 15 s</option><option value="0">⏱ Off</option></select>
-    <button id="btnSound" class="icon" title="Sound on/off">🔇</button>
-    <button id="btnCam" class="icon" title="Camera: TV broadcast / tracer cam">🎥</button>
-    <button id="btnPanels" class="icon" title="Show/hide panels">☰</button>
-  </div>
-  <div class="nextat" id="tNextAt">Auto drive every minute, on the :00</div>
-  <div class="manual" id="manualBox">
-    <div class="sl"><label>STRC price <b id="lblP">$100.00</b></label><input type="range" id="rngP" min="68" max="102" step="0.05" value="100" /></div>
-    <div class="sl"><label>RVOL (volume) <b id="lblV">1.00×</b></label><input type="range" id="rngV" min="-3" max="2.6" step="0.01" value="0" /></div>
-  </div>
-  <div class="presetsBox"><label>Try a what-if shot</label>
-    <div class="presets">
-      <button data-p="100.05" data-v="1.1">$100 par</button>
-      <button data-p="96.4" data-v="1">$96 bunker</button>
-      <button data-p="86.5" data-v="1.6">$86 water</button>
-      <button data-p="78" data-v="1.2">$78 trees</button>
-      <button data-p="70.5" data-v="0.6">$70 crash</button>
-      <button data-p="100.1" data-v="4.5">Vol pump ⛳</button>
+  <div class="drawer" id="drawer" hidden>
+    <div class="crow sel">
+      <select id="selMode" title="Data feed: live quotes, a scripted demo tour, or manual sliders"><option value="live">📡 Live</option><option value="demo">🎬 Demo</option><option value="manual">🎚 Manual</option></select>
+      <select id="selInt" title="How often the golfer drives automatically"><option value="60">⏱ 1 min</option><option value="30">⏱ 30 s</option><option value="15">⏱ 15 s</option><option value="0">⏱ Off</option></select>
+      <button id="btnSound" class="icon" title="Sound on/off">🔇</button>
+      <button id="btnCam" class="icon" title="Camera: TV broadcast / tracer cam">🎥</button>
     </div>
+    <div class="nextat" id="tNextAt">Auto drive every minute, on the :00</div>
+    <div class="manual" id="manualBox">
+      <div class="sl"><label><span id="lblPName">STRC price</span> <b id="lblP">$100.00</b></label><input type="range" id="rngP" min="68" max="102" step="0.05" value="100" /></div>
+      <div class="sl"><label>RVOL (volume) <b id="lblV">1.00×</b></label><input type="range" id="rngV" min="-3" max="2.6" step="0.01" value="0" /></div>
+    </div>
+  </div>
+  <div class="presets" id="presets" hidden>
+    <button data-p="100.05" data-v="1.1">$100 par</button>
+    <button data-p="96.4" data-v="1">$96 bunker</button>
+    <button data-p="86.5" data-v="1.6">$86 water</button>
+    <button data-p="78" data-v="1.2">$78 trees</button>
+    <button data-p="70.5" data-v="0.6">$70 crash</button>
+    <button data-p="100.1" data-v="4.5">Vol pump ⛳</button>
   </div>
 </div>
 
@@ -413,8 +457,20 @@ function toast(msg, ms = 4200) { const t = $('toast'); t.textContent = msg; t.cl
 /* =====================================================================
    2. STRC DATA FEED — CNBC (CORS-enabled), demo tour, manual sliders
    ===================================================================== */
-const CNBC_QUOTE = 'https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol?symbols=STRC&requestMethod=itv&noform=1&partnerId=2&fund=1&exthrs=1&output=json&events=1';
-const CNBC_BARS = 'https://ts-api.cnbc.com/harmony/app/charts/1D.json?symbol=STRC';
+const store = {
+  get(k) { try { return localStorage.getItem('strcOpen.' + k); } catch (e) { return null; } },
+  set(k, v) { try { localStorage.setItem('strcOpen.' + k, v); } catch (e) { /* private mode */ } },
+};
+// Each ticker brings its own golfer. Both are bitcoin-treasury perpetual preferreds with a variable monthly
+// dividend that the issuer adjusts to keep the price near the $100 stated amount, so $100 is "par" for both.
+const TICKERS = {
+  STRC: { sym: 'STRC', name: 'Strategy “Stretch” Preferred', golfer: 'Michael Saylor', board: 'M. SAYLOR', hole: 'The Stretch', look: 'saylor', acc: ['#ffb347', '#f7931a', '#c86f06'], base: { prev: 99.88, adv: 1.57e6, yrLo: 71.25, yrHi: 100.42 } },
+  SATA: { sym: 'SATA', name: 'Strive Series A Preferred', golfer: 'Matt Cole', board: 'M. COLE', hole: 'The Strive', look: 'cole', acc: ['#8ff3c9', '#2fc58b', '#15905d'], base: { prev: 99.35, adv: 0.62e6, yrLo: 79.01, yrHi: 101.35 } },
+};
+const QS = new URLSearchParams(location.search);
+let TK = TICKERS[(QS.get('t') || '').toUpperCase()] || TICKERS[store.get('ticker')] || TICKERS.STRC;
+const quoteURL = (sym) => `https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol?symbols=${sym}&requestMethod=itv&noform=1&partnerId=2&fund=1&exthrs=1&output=json&events=1`;
+const barsURL = (sym) => `https://ts-api.cnbc.com/harmony/app/charts/1D.json?symbol=${sym}`;
 const num = (s) => {
   if (s == null) return NaN;
   const m = String(s).replace(/[,$%+\s]/g, '').match(/^(-?[\d.]+)([KMB])?$/i);
@@ -446,7 +502,8 @@ const TOUR = [
 const Feed = {
   mode: 'live', snap: null, volHist: [], failCount: 0, tourIdx: 0, demoVol: 0,
   manual: { price: 100, rvol: 1 },
-  base: { prev: 99.66, adv: 1.61e6, yrLo: 71.25, yrHi: 100.42 },
+  base: { ...TK.base },
+  setTicker(tk) { Object.assign(this, { base: { ...tk.base }, volHist: [], failCount: 0, demoVol: 0, snap: null }); },
   async snapshot(reason = 'auto') {
     let s;
     if (this.mode === 'manual') s = this.fromManual();
@@ -455,8 +512,8 @@ const Feed = {
       try { s = await this.fromLive(reason); this.failCount = 0; }
       catch (e) {
         if (reason === 'ticker') throw e;
-        console.warn('STRC live feed failed', e);
-        if (++this.failCount === 1) toast('Live STRC feed is unreachable right now, so the demo tour is playing instead.');
+        console.warn(TK.sym + ' live feed failed', e);
+        if (++this.failCount === 1) toast(`Live ${TK.sym} feed is unreachable right now, so the demo tour is playing instead.`);
         s = this.fromDemo('Live feed offline · showing the demo tour');
       }
     }
@@ -464,16 +521,17 @@ const Feed = {
     return s;
   },
   async fromLive(reason) {
-    const [qr, br] = await Promise.allSettled([getJSON(CNBC_QUOTE), reason === 'ticker' ? Promise.reject(new Error('skip')) : getJSON(CNBC_BARS)]);
+    const sym = TK.sym;
+    const [qr, br] = await Promise.allSettled([getJSON(quoteURL(sym)), reason === 'ticker' ? Promise.reject(new Error('skip')) : getJSON(barsURL(sym))]);
     if (qr.status !== 'fulfilled') throw qr.reason;
     const Q = qr.value?.FormattedQuoteResult?.FormattedQuote?.[0];
     const price = num(Q?.last);
-    if (!isFinite(price)) throw new Error('No STRC quote in response');
+    if (!isFinite(price)) throw new Error(`No ${sym} quote in response`);
     const now = Date.now();
     const adv = num(Q.tendayavgvol) || this.base.adv, avgMin = adv / 390, dayVol = num(Q.volume);
     Object.assign(this.base, { prev: num(Q.previous_day_closing) || this.base.prev, adv, yrLo: num(Q.yrloprice) || this.base.yrLo, yrHi: num(Q.yrhiprice) || this.base.yrHi });
     const bars = br.status === 'fulfilled' ? parseBars(br.value) : [];
-    const common = { prev: this.base.prev, adv, avgMin, dayVol, yrLo: this.base.yrLo, yrHi: this.base.yrHi };
+    const common = { sym, prev: this.base.prev, adv, avgMin, dayVol, yrLo: this.base.yrLo, yrHi: this.base.yrHi };
     if (Q.curmktstatus === 'REG_MKT') {
       if (isFinite(dayVol)) { this.volHist.push({ t: now, v: dayVol }); this.volHist = this.volHist.filter((h) => now - h.t < 6 * 60e3); }
       const ref = this.volHist.filter((h) => now - h.t >= 40e3 && now - h.t <= 180e3).sort((a, b) => Math.abs(now - a.t - 60e3) - Math.abs(now - b.t - 60e3))[0];
@@ -497,15 +555,15 @@ const Feed = {
     const s = TOUR[this.tourIdx++ % TOUR.length];
     const price = +(s.p + (Math.random() - 0.5) * 0.12).toFixed(2), rvol = s.r * (0.9 + Math.random() * 0.2);
     const avgMin = this.base.adv / 390; this.demoVol += rvol * avgMin;
-    return { src: 'DEMO', price, rvol, minVol: rvol * avgMin, avgMin, adv: this.base.adv, dayVol: this.demoVol, prev: this.base.prev, yrLo: this.base.yrLo, yrHi: this.base.yrHi, t: Date.now(), note: note || 'Demo tour · scripted prices cycle through every kind of shot' };
+    return { sym: TK.sym, src: 'DEMO', price, rvol, minVol: rvol * avgMin, avgMin, adv: this.base.adv, dayVol: this.demoVol, prev: this.base.prev, yrLo: this.base.yrLo, yrHi: this.base.yrHi, t: Date.now(), note: note || 'Demo tour · scripted prices cycle through every kind of shot' };
   },
   scenario(price, rvol) {
     const avgMin = this.base.adv / 390;
-    return { src: 'SCENARIO', price, rvol, minVol: rvol * avgMin, avgMin, adv: this.base.adv, dayVol: NaN, prev: this.base.prev, yrLo: this.base.yrLo, yrHi: this.base.yrHi, t: Date.now(), note: `What-if shot at $${price.toFixed(2)} and ${rvol.toFixed(1)}× volume. The feed resumes on the next drive.` };
+    return { sym: TK.sym, src: 'SCENARIO', price, rvol, minVol: rvol * avgMin, avgMin, adv: this.base.adv, dayVol: NaN, prev: this.base.prev, yrLo: this.base.yrLo, yrHi: this.base.yrHi, t: Date.now(), note: `What-if shot at $${price.toFixed(2)} and ${rvol.toFixed(1)}× volume. The feed resumes on the next drive.` };
   },
   fromManual() {
     const { price, rvol } = this.manual, avgMin = this.base.adv / 390;
-    return { src: 'MANUAL', price, rvol, minVol: rvol * avgMin, avgMin, adv: this.base.adv, dayVol: NaN, prev: this.base.prev, yrLo: this.base.yrLo, yrHi: this.base.yrHi, t: Date.now(), note: 'Manual mode · set a price and volume, then hit Swing Now' };
+    return { sym: TK.sym, src: 'MANUAL', price, rvol, minVol: rvol * avgMin, avgMin, adv: this.base.adv, dayVol: NaN, prev: this.base.prev, yrLo: this.base.yrLo, yrHi: this.base.yrHi, t: Date.now(), note: 'Manual mode · set a price and volume, then hit Swing Now' };
   },
 };
 
@@ -1042,12 +1100,17 @@ function updateTreeShake(dt) {
 // Pin, flag and cup
 const PIN_POS = W(PIN.d, PIN.x);
 function canvasTex(w, h, draw) { const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = MAX_ANISO; return t; }
-const COIN_TEX = canvasTex(128, 128, (g) => {
-  const gr = g.createRadialGradient(64, 54, 10, 64, 64, 64); gr.addColorStop(0, '#ffc266'); gr.addColorStop(1, '#d97a06');
+const coinTex = (c1, c2) => canvasTex(128, 128, (g) => {
+  const gr = g.createRadialGradient(64, 54, 10, 64, 64, 64); gr.addColorStop(0, c1); gr.addColorStop(1, c2);
   g.fillStyle = gr; g.beginPath(); g.arc(64, 64, 62, 0, 6.283); g.fill();
   g.strokeStyle = 'rgba(255,255,255,0.3)'; g.lineWidth = 6; g.beginPath(); g.arc(64, 64, 52, 0, 6.283); g.stroke();
   g.fillStyle = '#fff'; g.font = '900 72px "Arial Black", Arial, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('₿', 64, 68);
 });
+const COIN = { STRC: coinTex('#ffc266', '#d97a06'), SATA: coinTex('#8ff3c9', '#15905d') };
+const COIN_TEX = COIN.STRC;
+const coinFaceMat = new THREE.MeshStandardMaterial({ map: COIN_TEX, metalness: 0.4, roughness: 0.35 });
+const bagLogoMat = new THREE.MeshStandardMaterial({ map: COIN_TEX, roughness: 0.4 });
+const bagBandMat = new THREE.MeshStandardMaterial({ color: '#f7931a', roughness: 0.5 });
 const pinGroup = new THREE.Group(); pinGroup.position.copy(PIN_POS); scene.add(pinGroup);
 {
   const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.0127, 0.0127, 2.3, 8), new THREE.MeshStandardMaterial({ color: '#f4f4ee', roughness: 0.4 }));
@@ -1058,13 +1121,16 @@ const pinGroup = new THREE.Group(); pinGroup.position.copy(PIN_POS); scene.add(p
 }
 const flagGeo = new THREE.PlaneGeometry(0.62, 0.42, 14, 5).translate(0.31, 0, 0);
 const flagBase = flagGeo.attributes.position.array.slice();
-{
-  const tex = canvasTex(256, 170, (g) => { g.fillStyle = '#f7931a'; g.fillRect(0, 0, 256, 170); g.fillStyle = '#fff'; g.font = '900 110px "Arial Black", Arial, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('₿', 128, 92); });
-  const back = tex.clone(); back.wrapS = THREE.RepeatWrapping; back.repeat.x = -1; back.needsUpdate = true;
-  for (const [side, map] of [[THREE.FrontSide, tex], [THREE.BackSide, back]]) {
-    const flag = new THREE.Mesh(flagGeo, new THREE.MeshStandardMaterial({ map, side, roughness: 0.8 }));
-    flag.position.y = 2.09; flag.castShadow = side === THREE.FrontSide; pinGroup.add(flag);
-  }
+const flagTex = (col) => {
+  const f = canvasTex(256, 170, (g) => { g.fillStyle = col; g.fillRect(0, 0, 256, 170); g.fillStyle = '#fff'; g.font = '900 110px "Arial Black", Arial, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('₿', 128, 92); });
+  const b = f.clone(); b.wrapS = THREE.RepeatWrapping; b.repeat.x = -1; b.needsUpdate = true; // readable from behind too
+  return { f, b };
+};
+const FLAG = { STRC: flagTex('#f7931a'), SATA: flagTex('#2fc58b') };
+const flagMats = [];
+for (const [side, map] of [[THREE.FrontSide, FLAG.STRC.f], [THREE.BackSide, FLAG.STRC.b]]) {
+  const m = new THREE.MeshStandardMaterial({ map, side, roughness: 0.8 }); flagMats.push(m);
+  const flag = new THREE.Mesh(flagGeo, m); flag.position.y = 2.09; flag.castShadow = side === THREE.FrontSide; pinGroup.add(flag);
 }
 function waveFlag(t, amp = 1) {
   const p = flagGeo.attributes.position;
@@ -1072,15 +1138,27 @@ function waveFlag(t, amp = 1) {
   p.needsUpdate = true; flagGeo.computeVertexNormals();
 }
 // Tee peg, ₿ tee markers, golf bag, tee sign, leaderboard
+const signCanvas = document.createElement('canvas'); signCanvas.width = 512; signCanvas.height = 300;
+const signTex = new THREE.CanvasTexture(signCanvas); signTex.colorSpace = THREE.SRGBColorSpace; signTex.anisotropy = MAX_ANISO;
+function drawSign() {
+  const g = signCanvas.getContext('2d'), a = TK.acc[1];
+  g.fillStyle = '#0f2a1c'; g.fillRect(0, 0, 512, 300); g.strokeStyle = a; g.lineWidth = 10; g.strokeRect(8, 8, 496, 284);
+  g.textBaseline = 'middle'; g.fillStyle = a; g.font = '900 120px "Arial Black", Arial, sans-serif'; g.fillText('21', 34, 112);
+  g.fillStyle = '#fff'; g.font = '700 40px Arial, sans-serif'; g.fillText(TK.hole.toUpperCase(), 218, 82);
+  g.fillStyle = '#bfe3c9'; g.font = '600 32px Arial, sans-serif'; g.fillText('PAR 4 · 330 YDS', 218, 132);
+  g.fillStyle = '#fff'; g.font = '700 36px Arial, sans-serif'; g.fillText(`${TK.sym} PAR  $100.00`, 34, 232);
+  signTex.needsUpdate = true;
+}
+drawSign();
 const teePeg = new THREE.Mesh(new THREE.CylinderGeometry(0.0045, 0.0025, 0.05, 8), new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.5 }));
 teePeg.position.set(0, 0.01, 0); scene.add(teePeg);
 {
-  const side = new THREE.MeshStandardMaterial({ color: '#d98a1c', metalness: 0.7, roughness: 0.3 }), face = new THREE.MeshStandardMaterial({ map: COIN_TEX, metalness: 0.4, roughness: 0.35 });
+  const side = new THREE.MeshStandardMaterial({ color: '#c9a76a', metalness: 0.7, roughness: 0.3 }), face = coinFaceMat;
   for (const sx of [-1, 1]) { const coin = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.05, 32), [side, face, face]); coin.rotation.x = Math.PI / 2; coin.position.set(sx * 2.9, 0.13, -3.4); coin.castShadow = true; scene.add(coin); }
   const bag = new THREE.Group();
   const body = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.13, 0.86, 20), new THREE.MeshStandardMaterial({ color: '#15181d', roughness: 0.55 })); body.position.y = 0.43; bag.add(body);
-  const band = new THREE.Mesh(new THREE.CylinderGeometry(0.153, 0.153, 0.12, 20), new THREE.MeshStandardMaterial({ color: '#f7931a', roughness: 0.5 })); band.position.y = 0.64; bag.add(band);
-  const logo = new THREE.Mesh(new THREE.CircleGeometry(0.075, 24), new THREE.MeshStandardMaterial({ map: COIN_TEX, roughness: 0.4 })); logo.position.set(0, 0.36, 0.143); bag.add(logo);
+  const band = new THREE.Mesh(new THREE.CylinderGeometry(0.153, 0.153, 0.12, 20), bagBandMat); band.position.y = 0.64; bag.add(band);
+  const logo = new THREE.Mesh(new THREE.CircleGeometry(0.075, 24), bagLogoMat); logo.position.set(0, 0.36, 0.143); bag.add(logo);
   [[-0.05, 0.03, '#f7931a'], [0.06, 0.02, '#ffffff'], [0, -0.06, '#1b2233']].forEach(([x, z, c], i) => {
     const h = new THREE.Mesh(new THREE.SphereGeometry(0.07, 14, 10), new THREE.MeshStandardMaterial({ color: c, roughness: 0.7 })); h.scale.set(1, 1.25, 1); h.position.set(x, 0.95 + i * 0.03, z); bag.add(h);
   });
@@ -1088,13 +1166,6 @@ teePeg.position.set(0, 0.01, 0); scene.add(teePeg);
   bag.position.set(-2.5, 0, 1.15); bag.rotation.set(0.16, 0.5, 0.05); scene.add(bag);
 
   const wood = new THREE.MeshStandardMaterial({ color: '#6b4a2e', roughness: 0.9 });
-  const signTex = canvasTex(512, 300, (g) => {
-    g.fillStyle = '#0f2a1c'; g.fillRect(0, 0, 512, 300); g.strokeStyle = '#f7931a'; g.lineWidth = 10; g.strokeRect(8, 8, 496, 284);
-    g.textBaseline = 'middle'; g.fillStyle = '#f7931a'; g.font = '900 120px "Arial Black", Arial, sans-serif'; g.fillText('21', 34, 112);
-    g.fillStyle = '#fff'; g.font = '700 40px Arial, sans-serif'; g.fillText('THE STRETCH', 218, 82);
-    g.fillStyle = '#bfe3c9'; g.font = '600 32px Arial, sans-serif'; g.fillText('PAR 4 · 330 YDS', 218, 132);
-    g.fillStyle = '#fff'; g.font = '700 36px Arial, sans-serif'; g.fillText('PAR VALUE  $100.00', 34, 232);
-  });
   const sign = new THREE.Group();
   const board = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.53, 0.04), [wood, wood, wood, wood, new THREE.MeshStandardMaterial({ map: signTex, roughness: 0.6 }), wood]); board.position.y = 0.98;
   const post = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.98, 0.07), wood); post.position.y = 0.49;
@@ -1105,13 +1176,13 @@ const boardCanvas = document.createElement('canvas'); boardCanvas.width = 1024; 
 const boardTex = new THREE.CanvasTexture(boardCanvas); boardTex.colorSpace = THREE.SRGBColorSpace; boardTex.anisotropy = MAX_ANISO;
 function drawBoard(snap, lastShot) {
   const g = boardCanvas.getContext('2d');
-  g.fillStyle = '#0d1f16'; g.fillRect(0, 0, 1024, 384); g.fillStyle = '#f7931a'; g.fillRect(0, 0, 1024, 80);
-  g.fillStyle = '#1b1000'; g.font = '900 54px "Arial Black", Arial, sans-serif'; g.textBaseline = 'middle'; g.fillText('STRC OPEN', 28, 42);
+  g.fillStyle = '#0d1f16'; g.fillRect(0, 0, 1024, 384); g.fillStyle = TK.acc[1]; g.fillRect(0, 0, 1024, 80);
+  g.fillStyle = '#101208'; g.font = '900 54px "Arial Black", Arial, sans-serif'; g.textBaseline = 'middle'; g.textAlign = 'left'; g.fillText(`${TK.sym} OPEN`, 28, 42);
   g.font = '700 34px Arial, sans-serif'; g.textAlign = 'right'; g.fillText('PAR $100', 996, 42); g.textAlign = 'left';
-  g.fillStyle = '#fff'; g.font = '700 46px Arial, sans-serif'; g.fillText('M. SAYLOR', 28, 150);
+  g.fillStyle = '#fff'; g.font = '700 46px Arial, sans-serif'; g.fillText(TK.board, 28, 150);
   if (snap) { const d = snap.price - PAR; g.fillStyle = d >= -0.5 ? '#3ddc84' : d >= -5 ? '#f2c14e' : '#ff5d5d'; g.textAlign = 'right'; g.font = '700 52px "Courier New", monospace'; g.fillText(`$${snap.price.toFixed(2)}`, 996, 150); g.textAlign = 'left'; }
   g.fillStyle = '#9fb0bf'; g.font = '600 36px Arial, sans-serif'; g.fillText(lastShot ? `LAST: ${lastShot.title} ${lastShot.m.total ? Math.round(lastShot.m.total) + ' YDS' : ''}` : 'ON THE TEE', 28, 238);
-  g.fillStyle = '#f7931a'; g.font = '700 30px Arial, sans-serif'; g.fillText('₿  HOLE 21 · THE STRETCH', 28, 320);
+  g.fillStyle = TK.acc[1]; g.font = '700 30px Arial, sans-serif'; g.fillText(`₿  HOLE 21 · ${TK.hole.toUpperCase()}`, 28, 320);
   boardTex.needsUpdate = true;
 }
 drawBoard(null, null);
@@ -1126,20 +1197,36 @@ drawBoard(null, null);
 }
 
 /* =====================================================================
-   6. MICHAEL SAYLOR — procedural rig. The club is driven along a swing
-      plane; arms and legs follow with two-bone IK so hands stay on the grip.
+   6. THE GOLFERS (Michael Saylor for STRC, Matt Cole for SATA) — one procedural
+      rig with swappable looks. The club is driven along a swing plane; arms and
+      legs follow with two-bone IK so the hands stay on the grip.
    ===================================================================== */
+const HAIR_TEX = canvasTex(256, 128, (g, w, h) => { // combed strands, tinted per golfer by the material color
+  g.fillStyle = '#d6d6d6'; g.fillRect(0, 0, w, h);
+  const r = mulberry32(17);
+  for (let i = 0; i < 420; i++) {
+    const x = r() * w, c = (150 + r() * 105) | 0;
+    g.strokeStyle = `rgba(${c},${c},${c},0.55)`; g.lineWidth = 0.6 + r() * 1.4;
+    g.beginPath(); g.moveTo(x, 0); g.bezierCurveTo(x + (r() - 0.5) * 10, h * 0.33, x + (r() - 0.5) * 10, h * 0.66, x + (r() - 0.5) * 6, h); g.stroke();
+  }
+});
+HAIR_TEX.wrapS = HAIR_TEX.wrapT = THREE.RepeatWrapping; HAIR_TEX.repeat.set(6, 1);
 const MAT = {
-  skin: new THREE.MeshStandardMaterial({ color: '#e2b08c', roughness: 0.48 }),
-  suit: new THREE.MeshStandardMaterial({ color: '#1b2233', roughness: 0.8 }),
-  lapel: new THREE.MeshStandardMaterial({ color: '#283250', roughness: 0.7 }),
-  shirt: new THREE.MeshStandardMaterial({ color: '#f4f5f7', roughness: 0.7 }),
+  skin: new THREE.MeshStandardMaterial({ color: '#e6b59b', roughness: 0.5 }),
+  suit: new THREE.MeshStandardMaterial({ color: '#15171c', roughness: 0.8 }),
+  lapel: new THREE.MeshStandardMaterial({ color: '#22252d', roughness: 0.7 }),
+  shirt: new THREE.MeshStandardMaterial({ color: '#f5f6f8', roughness: 0.7 }),
   tie: new THREE.MeshStandardMaterial({ color: '#f7931a', roughness: 0.45, emissive: '#5a2e00', emissiveIntensity: 0.35 }),
-  hair: new THREE.MeshStandardMaterial({ color: '#4d4036', roughness: 1 }),
+  pocket: new THREE.MeshStandardMaterial({ color: '#f7931a', roughness: 0.5 }),
+  hair: new THREE.MeshStandardMaterial({ color: '#ffffff', vertexColors: true, map: HAIR_TEX, roughness: 0.75 }),
+  beard: new THREE.MeshStandardMaterial({ color: '#e2dfd9', map: HAIR_TEX, roughness: 0.95 }),
+  brow: new THREE.MeshStandardMaterial({ color: '#b9b3ab', roughness: 0.9 }),
+  teeth: new THREE.MeshStandardMaterial({ color: '#f4f1ea', roughness: 0.35 }),
+  emblem: new THREE.MeshStandardMaterial({ map: COIN_TEX, roughness: 0.5 }),
   shoe: new THREE.MeshStandardMaterial({ color: '#141010', roughness: 0.3, metalness: 0.1 }),
   glove: new THREE.MeshStandardMaterial({ color: '#f5f5f0', roughness: 0.7 }),
   eye: new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.2 }),
-  iris: new THREE.MeshStandardMaterial({ color: '#3d6ea8', roughness: 0.2 }),
+  iris: new THREE.MeshStandardMaterial({ color: '#7d9db3', roughness: 0.2 }),
   dark: new THREE.MeshStandardMaterial({ color: '#2a1d16', roughness: 0.7 }),
   lip: new THREE.MeshStandardMaterial({ color: '#a8645a', roughness: 0.6 }),
   shaft: new THREE.MeshStandardMaterial({ color: '#c8ced6', metalness: 0.9, roughness: 0.22 }),
@@ -1176,26 +1263,81 @@ R.chest = new THREE.Group(); golfer.add(R.chest);
   const tie = mk(new THREE.BoxGeometry(0.014, 0.3, 0.042), MAT.tie, R.chest, false); tie.position.set(0.142, 0.3, 0); tie.rotation.z = 0.06;
   const knot = mk(new THREE.BoxGeometry(0.02, 0.035, 0.035), MAT.tie, R.chest, false); knot.position.set(0.147, 0.452, 0);
   for (const s of [-1, 1]) { const lp = mk(new THREE.BoxGeometry(0.012, 0.24, 0.05), MAT.lapel, R.chest, false); lp.position.set(0.142, 0.36, s * 0.058); lp.rotation.x = s * 0.35; }
-  const pocket = mk(new THREE.BoxGeometry(0.01, 0.025, 0.05), MAT.tie, R.chest, false); pocket.position.set(0.133, 0.39, -0.115);
+  const pocket = mk(new THREE.BoxGeometry(0.01, 0.025, 0.05), MAT.pocket, R.chest, false); pocket.position.set(0.133, 0.39, -0.115);
   const collar = mk(new THREE.TorusGeometry(0.058, 0.017, 8, 18), MAT.shirt, R.chest, false); collar.rotation.x = Math.PI / 2; collar.position.set(0.02, 0.52, 0);
   const neck = mk(new THREE.CylinderGeometry(0.05, 0.056, 0.13, 14), MAT.skin, R.chest); neck.position.set(0.02, 0.56, 0);
-  const emblem = mk(new THREE.CircleGeometry(0.055, 24), new THREE.MeshStandardMaterial({ map: COIN_TEX, roughness: 0.5 }), R.chest, false);
+  const emblem = mk(new THREE.CircleGeometry(0.055, 24), MAT.emblem, R.chest, false);
   emblem.position.set(-0.145, 0.33, 0); emblem.rotation.y = -Math.PI / 2;
 }
-// head (head frame: face looks down +Z so Object3D.lookAt aims his eyes)
+// head (head frame: face looks down +Z so Object3D.lookAt aims the eyes)
 R.head = new THREE.Group(); golfer.add(R.head);
 {
   const skull = mk(new THREE.SphereGeometry(0.112, 30, 22), MAT.skin, R.head); skull.scale.set(0.94, 1.1, 1); skull.position.set(0, 0.11, 0.008);
-  const hair = mk(new THREE.SphereGeometry(0.1185, 30, 12, Math.PI / 2 + 0.95, Math.PI * 2 - 1.9, 1.15, 1.05), MAT.hair, R.head); hair.scale.set(0.94, 1.1, 1); hair.position.copy(skull.position); hair.rotation.x = 0.3;
   for (const s of [-1, 1]) {
-    const ear = mk(new THREE.SphereGeometry(0.028, 12, 10), MAT.skin, R.head); ear.scale.set(0.45, 1, 0.75); ear.position.set(s * 0.105, 0.1, 0);
+    const ear = mk(new THREE.SphereGeometry(0.03, 12, 10), MAT.skin, R.head); ear.scale.set(0.42, 1, 0.72); ear.position.set(s * 0.109, 0.1, -0.004);
     const eye = mk(new THREE.SphereGeometry(0.0155, 12, 10), MAT.eye, R.head, false); eye.position.set(s * 0.036, 0.125, 0.093);
     const iris = mk(new THREE.SphereGeometry(0.0085, 10, 8), MAT.iris, R.head, false); iris.position.set(s * 0.036, 0.125, 0.106);
     const pupil = mk(new THREE.SphereGeometry(0.0045, 8, 6), MAT.dark, R.head, false); pupil.position.set(s * 0.036, 0.125, 0.112);
-    const brow = mk(new THREE.BoxGeometry(0.036, 0.008, 0.012), MAT.dark, R.head, false); brow.position.set(s * 0.037, 0.152, 0.1); brow.rotation.z = -s * 0.12;
+    const brow = mk(new THREE.BoxGeometry(0.038, 0.009, 0.013), MAT.brow, R.head, false); brow.position.set(s * 0.037, 0.153, 0.1); brow.rotation.z = s * 0.08;
   }
-  const nose = mk(new THREE.SphereGeometry(0.018, 12, 10), MAT.skin, R.head, false); nose.scale.set(0.75, 1.2, 1); nose.position.set(0, 0.1, 0.112);
-  const mouth = mk(new THREE.TorusGeometry(0.022, 0.0045, 6, 14, Math.PI), MAT.lip, R.head, false); mouth.rotation.z = Math.PI; mouth.position.set(0, 0.066, 0.1);
+  const nose = mk(new THREE.SphereGeometry(0.016, 12, 10), MAT.skin, R.head, false); nose.scale.set(0.62, 1.05, 0.95); nose.position.set(0, 0.1, 0.112);
+  // an open smile: lower-lip curve, a row of teeth, a thin upper lip (positioned per look in applyLook)
+  R.mouth = mk(new THREE.TorusGeometry(0.0165, 0.0027, 6, 16, Math.PI), MAT.lip, R.head, false); R.mouth.rotation.z = Math.PI;
+  R.teeth = mk(new THREE.CircleGeometry(0.0152, 16, Math.PI, Math.PI), MAT.teeth, R.head, false);
+  R.upperLip = mk(new THREE.BoxGeometry(0.035, 0.0032, 0.003), MAT.lip, R.head, false);
+  // Hair and beard are shells that hug the skull. Each column of a shell (an angle around the head, 0 = the face)
+  // runs from a top line to a bottom line, so we can draw a real hairline / beard line; thickness tapers at the edges.
+  const SKULL_R = [0.105, 0.123, 0.112], SKULL_C = [0, 0.11, 0.008];
+  const curve = (pts) => (az) => {
+    const a = Math.abs(az);
+    for (let k = 1; k < pts.length; k++) if (a <= pts[k][0]) { const [a0, t0] = pts[k - 1], [a1, t1] = pts[k]; return lerp(t0, t1, smooth(a0, a1, a)); }
+    return pts[pts.length - 1][1];
+  };
+  function shell({ az0 = -Math.PI, az1 = Math.PI, top = () => 0, bot, thick, lift = () => 0, taperTop = false, color = null, segU = 96, segV = 24 }) {
+    const pos = [], nor = [], uv = [], col = [], idx = [], c = new THREE.Color();
+    for (let i = 0; i <= segU; i++) {
+      const az = az0 + (i / segU) * (az1 - az0), t0 = top(az), t1 = bot(az);
+      for (let j = 0; j <= segV; j++) {
+        const v = j / segV, th = lerp(t0, t1, v);
+        const taper = (1 - smooth(0.78, 1, v)) * (taperTop ? smooth(0, 0.22, v) : 1);
+        const k = 1 + (thick + lift(az, th)) * taper;
+        const nx = Math.sin(th) * Math.sin(az), ny = Math.cos(th), nz = Math.sin(th) * Math.cos(az);
+        pos.push(nx * k, ny * k, nz * k); nor.push(nx, ny, nz); uv.push(i / segU, v);
+        if (color) { color(c, az, v); col.push(c.r, c.g, c.b); }
+      }
+    }
+    for (let i = 0; i < segU; i++) for (let j = 0; j < segV; j++) { const a = i * (segV + 1) + j, b = a + segV + 1; idx.push(a, a + 1, b, b, a + 1, b + 1); }
+    const g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+    g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); if (color) g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+    g.setIndex(idx); return g;
+  }
+  const onSkull = (geo, mat, parent) => { const m = mk(geo, mat, parent); m.scale.set(...SKULL_R); m.position.set(...SKULL_C); return m; };
+  const tones = (a, b) => { const A = new THREE.Color(a), B = new THREE.Color(b); return (out, w) => out.copy(A).lerp(B, clamp(w, 0, 1)); };
+  R.hairStyles = { saylor: new THREE.Group(), cole: new THREE.Group() };
+  for (const k in R.hairStyles) R.head.add(R.hairStyles[k]);
+  { // Michael Saylor: full silver hair swept back and to one side, a touch darker low on the sides
+    const tone = tones('#dcd8d1', '#a6a29b');
+    onSkull(shell({
+      bot: curve([[0, 0.86], [0.45, 0.9], [0.8, 1.02], [1.15, 1.24], [1.5, 1.4], [1.9, 1.96], [2.4, 2.26], [Math.PI, 2.36]]),
+      thick: 0.075, lift: (az, th) => 0.07 * Math.exp(-((th - 0.55) ** 2) / 0.1) * Math.max(0, Math.cos(az + 0.7)),
+      color: (c, az, v) => tone(c, 0.65 * smooth(0.55, 1, v)),
+    }), MAT.hair, R.hairStyles.saylor);
+  }
+  { // Matt Cole: short dark-brown hair, grey at the temples and sides, a neat lift at the front
+    const tone = tones('#3b2f26', '#827c75');
+    onSkull(shell({
+      bot: curve([[0, 0.74], [0.4, 0.78], [0.75, 0.94], [1.1, 1.14], [1.5, 1.38], [1.9, 1.94], [2.4, 2.24], [Math.PI, 2.34]]),
+      thick: 0.045, lift: (az, th) => 0.07 * Math.exp(-((th - 0.45) ** 2) / 0.06) * Math.max(0, Math.cos(az)),
+      color: (c, az, v) => tone(c, smooth(0.7, 1.25, Math.abs(az)) * smooth(0.45, 0.95, v)),
+    }), MAT.hair, R.hairStyles.cole);
+  }
+  // Saylor's short white beard + mustache: from under the nose and the cheek line, down under the jaw
+  R.beard = onSkull(shell({
+    az0: -1.62, az1: 1.62, taperTop: true, thick: 0.04, segU: 40, segV: 16,
+    top: curve([[0, 1.82], [0.3, 1.86], [0.9, 1.72], [1.62, 1.45]]),
+    bot: curve([[0, 2.8], [1.0, 2.58], [1.62, 2.2]]),
+  }), MAT.beard, R.head);
   // laser eyes (₿ maxi mode — switched on for a hole-in-one)
   R.lasers = new THREE.Group(); R.head.add(R.lasers);
   const beamMat = new THREE.MeshBasicMaterial({ color: '#ff2a1a', transparent: true, opacity: 0.85, blending: THREE.AdditiveBlending, depthWrite: false, fog: false });
@@ -1206,6 +1348,21 @@ R.head = new THREE.Group(); golfer.add(R.head);
     const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true })); glow.scale.set(0.12, 0.12, 1); glow.position.set(s * 0.036, 0.125, 0.115); R.lasers.add(glow);
   }
   R.lasers.visible = false;
+}
+// Looks, from recent photos: Saylor = silver swept-back hair, short white beard, black suit, orange tie.
+// Cole = short dark hair greying at the temples, clean-shaven, big smile, navy suit, light-blue shirt, Strive-green pocket square.
+const LOOKS = {
+  saylor: { skin: '#e6b59b', beard: '#e2dfd9', brow: '#b9b3ab', iris: '#7d9db3', suit: '#15171c', lapel: '#22252d', shirt: '#f5f6f8', tie: '#f7931a', tieGlow: '#5a2e00', pocket: '#f7931a', lip: '#a8645a' },
+  cole: { skin: '#e8b48f', beard: null, brow: '#3a2c22', iris: '#6b8f96', suit: '#1f2b45', lapel: '#2b3958', shirt: '#dce7f5', tie: '#27324c', tieGlow: '#000000', pocket: '#2fc58b', lip: '#a35c50' },
+};
+function applyLook(id) {
+  const L = LOOKS[id];
+  for (const k of ['skin', 'brow', 'iris', 'suit', 'lapel', 'shirt', 'tie', 'pocket', 'lip']) MAT[k].color.set(L[k]);
+  MAT.tie.emissive.set(L.tieGlow); MAT.beard.color.set(L.beard || '#ffffff');
+  for (const k in R.hairStyles) R.hairStyles[k].visible = k === id;
+  R.beard.visible = !!L.beard;
+  const y = 0.066, z = L.beard ? 0.1175 : 0.1148; // the mouth sits just on top of the beard / skin
+  R.mouth.position.set(0, y, z); R.teeth.position.set(0, y, z - 0.001); R.upperLip.position.set(0, y + 0.0004, z);
 }
 // arms, legs, shoes
 for (const s of ['L', 'R']) {
@@ -1379,7 +1536,7 @@ function applyPose(P, lookW) {
   R.head.position.copy(J.neck); R.head.lookAt(lookW);
 }
 
-const Saylor = {
+const Player = {
   pose: newPose(), from: newPose(), tgt: newPose(), mode: 'address', idleT: 0, swingT: 0, style: 'normal', power: 0.7,
   post: null, postT: 0, resetT: 0, laser: 0, laserGoal: 0, lookW: GL(BALL_LOCAL), lookGoal: GL(BALL_LOCAL),
   startSwing(style, power) { this.mode = 'swing'; this.swingT = 0; this.style = style; this.power = power; this.post = null; this.laserGoal = 0; },
@@ -1416,7 +1573,7 @@ const Saylor = {
     $('avatar').style.setProperty('--laser', this.laser.toFixed(2));
   },
 };
-Saylor.update(0);
+Player.update(0);
 
 /* =====================================================================
    7. BALL, TRACER, EFFECTS, LABELS, CAMERA
@@ -1630,16 +1787,18 @@ const Sound = {
    9. HUD
    ===================================================================== */
 const STATUS = {
-  HIO: 'Pure strike + pumping volume = ACE!', GREEN: 'Drove the green on big volume', PURE: 'Striped it. STRC is at par.', FAIRWAY: 'Found the short grass',
-  ROUGH: 'A little offline. STRC slipping under par.', BUNKER: 'Beach time. STRC below par.', WATER: 'Hooked it into the drink', TREES: 'Sliced it into the timber',
-  SHANK: 'Shanked it. Ugly tape.', TOP: 'Topped it along the ground', WHIFF: 'Whiffed it. STRC is way below par.',
+  HIO: 'Pure strike + pumping volume = ACE!', GREEN: 'Drove the green on big volume', PURE: 'Striped it. {T} is at par.', FAIRWAY: 'Found the short grass',
+  ROUGH: 'A little offline. {T} slipping under par.', BUNKER: 'Beach time. {T} below par.', WATER: 'Hooked it into the drink', TREES: 'Sliced it into the timber',
+  SHANK: 'Shanked it. Ugly tape.', TOP: 'Topped it along the ground', WHIFF: 'Whiffed it. {T} is way below par.',
 };
 const parTxt = (p) => { const d = p - PAR; return `${d >= 0 ? '+' : '−'}$${Math.abs(d).toFixed(2)}`; };
 const priceCol = (p) => { const d = p - PAR; return d >= -0.5 ? 'var(--good)' : d >= -2.5 ? 'var(--warn)' : d >= -10 ? '#ff9a4b' : 'var(--bad)'; };
 const UI = {
   status(s) { $('pstat').textContent = s; },
   ticker(s) {
+    if (s.sym && s.sym !== TK.sym) return; // a stale response from before a ticker switch
     const chg = s.price - s.prev;
+    $('miniQuote').textContent = `${TK.sym} $${s.price.toFixed(2)} · ${parTxt(s.price)}`; $('miniQuote').style.color = priceCol(s.price);
     $('tPrice').textContent = '$' + s.price.toFixed(2); $('tPrice').style.color = priceCol(s.price);
     $('tChg').textContent = isFinite(chg) && !['MANUAL', 'SCENARIO'].includes(s.src) ? `${chg >= 0 ? '+' : ''}${chg.toFixed(2)} (${chg >= 0 ? '+' : ''}${((chg / s.prev) * 100).toFixed(2)}%)` : '';
     $('tChg').style.color = chg >= 0 ? 'var(--good)' : 'var(--bad)';
@@ -1680,17 +1839,17 @@ const LM = {
 function showBanner(P) {
   const b = $('banner'); b.style.setProperty('--bc', OUT[P.type].col);
   $('bTitle').textContent = P.title; $('bSub').textContent = P.sub;
-  $('bPrice').textContent = `STRC $${P.price.toFixed(2)} · ${parTxt(P.price)} vs par · RVOL ${P.rvol.toFixed(2)}×`;
+  $('bPrice').textContent = `${P.snap.sym || TK.sym} $${P.price.toFixed(2)} · ${parTxt(P.price)} vs par · RVOL ${P.rvol.toFixed(2)}×`;
   b.classList.add('show');
 }
 const hideBanner = () => $('banner').classList.remove('show');
 function addLog(P) {
   const ul = $('logList'); ul.querySelector('.empty')?.remove();
   const li = document.createElement('li'); li.style.setProperty('--c', OUT[P.type].col);
-  li.innerHTML = `<span class="lt">${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).replace(/\s?[AP]M$/i, '')}</span><span class="lr">${OUT[P.type].icon} ${P.title.replace(/!/g, '')}<small>${P.type === 'WHIFF' ? '0 yds' : P.type === 'WATER' ? 'in the water' : Math.round(P.m.total) + ' yds'}</small></span><span class="lp">$${P.price.toFixed(2)}<small>${P.rvol.toFixed(1)}× vol</small></span>`;
+  li.innerHTML = `<span class="lt">${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).replace(/\s?[AP]M$/i, '')}</span><span class="lr">${OUT[P.type].icon} ${P.title.replace(/!/g, '')}<small>${P.type === 'WHIFF' ? '0 yds' : P.type === 'WATER' ? 'in the water' : Math.round(P.m.total) + ' yds'}</small></span><span class="lp">$${P.price.toFixed(2)}<small>${P.snap.sym || TK.sym} · ${P.rvol.toFixed(1)}×</small></span>`;
   ul.prepend(li); while (ul.children.length > 14) ul.lastChild.remove();
 }
-const MM = { cv: $('minimap'), W: 240, H: 642, X0: -70, X1: 70, D0: -12, D1: 363, hist: [], dirty: true };
+const MM = { cv: $('minimap'), W: 240, H: 642, X0: -70, X1: 70, D0: -12, D1: 363, histBy: {}, dirty: true, get hist() { return (this.histBy[TK.sym] ||= []); } };
 MM.g = MM.cv.getContext('2d');
 MM.sx = (x) => ((x - MM.X0) / (MM.X1 - MM.X0)) * MM.W;
 MM.sy = (d) => ((MM.D1 - d) / (MM.D1 - MM.D0)) * MM.H;
@@ -1710,15 +1869,15 @@ MM.draw = function () {
   const g = this.g; g.clearRect(0, 0, this.W, this.H); g.drawImage(this.base, 0, 0);
   const px = this.sx(PIN.x), py = this.sy(PIN.d);
   g.strokeStyle = '#fff'; g.lineWidth = 2; g.beginPath(); g.moveTo(px, py); g.lineTo(px, py - 18); g.stroke();
-  g.fillStyle = '#f7931a'; g.beginPath(); g.moveTo(px, py - 18); g.lineTo(px + 12, py - 14); g.lineTo(px, py - 10); g.fill();
+  g.fillStyle = TK.acc[1]; g.beginPath(); g.moveTo(px, py - 18); g.lineTo(px + 12, py - 14); g.lineTo(px, py - 10); g.fill();
   for (const h of this.hist) { g.fillStyle = h.col; g.beginPath(); g.arc(this.sx(h.x), this.sy(h.d), 5, 0, 6.283); g.fill(); g.strokeStyle = 'rgba(0,0,0,0.55)'; g.lineWidth = 1.5; g.stroke(); }
   const P = Seq.P;
   if (P && P.flightN && ['flight', 'result', 'celebrate'].includes(Seq.state)) {
-    const tb = Seq.t - T_IMP; g.strokeStyle = '#f7931a'; g.lineWidth = 3.5; g.beginPath();
+    const tb = Seq.t - T_IMP; g.strokeStyle = TK.acc[1]; g.lineWidth = 3.5; g.beginPath();
     let first = true;
     for (const s of P.path) { if (s.t > tb) break; const q = DX(s.p); if (first) g.moveTo(this.sx(q.x), this.sy(q.d)); else g.lineTo(this.sx(q.x), this.sy(q.d)); first = false; }
     g.stroke();
-    if (tb > 0 && ball.visible) { const q = DX(ball.position); g.fillStyle = '#fff'; g.beginPath(); g.arc(this.sx(q.x), this.sy(q.d), 5.5, 0, 6.283); g.fill(); g.strokeStyle = '#f7931a'; g.lineWidth = 2.5; g.stroke(); }
+    if (tb > 0 && ball.visible) { const q = DX(ball.position); g.fillStyle = '#fff'; g.beginPath(); g.arc(this.sx(q.x), this.sy(q.d), 5.5, 0, 6.283); g.fill(); g.strokeStyle = TK.acc[1]; g.lineWidth = 2.5; g.stroke(); }
   }
   g.fillStyle = '#fff'; g.beginPath(); g.arc(this.sx(0), this.sy(0), 4.5, 0, 6.283); g.fill();
   this.dirty = false;
@@ -1746,10 +1905,10 @@ const Seq = {
     Labels.clear(); Rings.clear(); Tracer.clear(); Later.clear();
     ball.visible = true; ball.position.copy(BALL_TEE); teePeg.rotation.set(0, 0, 0); teePeg.position.set(0, 0.01, 0); ballGlow.material.opacity = 0;
     if (P.flightN) Tracer.set(P.path.slice(0, P.flightN).map((s) => s.p));
-    Saylor.startSwing(P.style, clamp((carryFromRvol(P.rvol) - 205) / 111, 0, 1));
+    Player.startSwing(P.style, clamp((carryFromRvol(P.rvol) - 205) / 111, 0, 1));
     Cam.cut(...VIEW.tee()); setShadowFocus(new V3(-1, 0, -3));
     hideBanner(); LM.reset(); MM.dirty = true;
-    UI.status(`Over the ball · STRC $${P.price.toFixed(2)} → ${P.band.name} band`);
+    UI.status(`Over the ball · ${TK.sym} $${P.price.toFixed(2)} → ${P.band.name} band`);
     UI.why(P, false);
     $('btnSwing').disabled = true;
   },
@@ -1759,7 +1918,7 @@ const Seq = {
     this.t += dt;
     const P = this.P, tb = this.t - T_IMP;
     if (!this.whooshed && tb >= -0.2) { this.whooshed = true; Sound.whoosh(); }
-    if (this.state === 'swing') { Saylor.lookGoal.copy(BALL_TEE); if (tb >= 0) this.impact(); return; }
+    if (this.state === 'swing') { Player.lookGoal.copy(BALL_TEE); if (tb >= 0) this.impact(); return; }
     samplePath(P.path, tb, ball.position);
     const T = P.flightT;
     if (P.flightN) Tracer.reveal(tb <= T ? (tb / T) * (P.flightN - 1) : P.flightN);
@@ -1768,7 +1927,7 @@ const Seq = {
       const hd = Math.hypot(ball.position.x - BALL_TEE.x, ball.position.z - BALL_TEE.z) / YD;
       if (P.flightN && tb <= T) { this.maxH = Math.max(this.maxH, ball.position.y); $('mApex').textContent = Math.round(this.maxH * 3.281); $('mCarry').textContent = Math.round(hd); }
       else if (P.flightN) $('mTotal').textContent = Math.round(hd);
-      if (tb > 0.25 && P.type !== 'WHIFF') Saylor.lookGoal.copy(ball.position);
+      if (tb > 0.25 && P.type !== 'WHIFF') Player.lookGoal.copy(ball.position);
       this.camera(tb);
       if (tb >= P.restT) this.result();
     } else if (this.state === 'result') {
@@ -1828,7 +1987,7 @@ const Seq = {
     Sound.cup(); Sound.crowd('roar'); confettiFX(PIN_POS);
     Later.add(0.25, () => { ball.visible = false; ballGlow.material.opacity = 0; });
     for (let i = 0; i < 7; i++) Later.add(0.3 + i * 0.42, () => fireworkFX(PIN_POS.clone().add(new V3(rnd(R01, -18, 18), rnd(R01, 22, 36), rnd(R01, 8, 40)))));
-    Saylor.setPost('celebrate'); Saylor.laserGoal = 1;
+    Player.setPost('celebrate'); Player.laserGoal = 1;
     UI.status('HOLE IN ONE! Laser eyes activated.');
   },
   result() {
@@ -1838,10 +1997,10 @@ const Seq = {
     if (!['WHIFF', 'HIO', 'WATER'].includes(P.type) && fin) { Labels.add(`TOTAL<b>${Math.round(P.m.total)}</b>`, fin.clone().setY(Math.max(fin.y, 0) + 1.2), 'total'); if (fin.distanceTo(P.landPos) > 2.5) Rings.show(restRing, fin); }
     const good = ['GREEN', 'PURE', 'FAIRWAY'].includes(P.type), bad = ['WATER', 'TREES', 'SHANK', 'WHIFF', 'TOP'].includes(P.type);
     if (P.type !== 'HIO') {
-      if (bad) { Saylor.setPost('dejected'); Sound.crowd('groan'); }
-      else { Saylor.lookGoal.copy(fin); Saylor.setPost('relax'); if (good) Sound.crowd('clap'); }
+      if (bad) { Player.setPost('dejected'); Sound.crowd('groan'); }
+      else { Player.lookGoal.copy(fin); Player.setPost('relax'); if (good) Sound.crowd('clap'); }
     }
-    UI.status(STATUS[P.type]);
+    UI.status(STATUS[P.type].replace('{T}', TK.sym));
     this.orbitC = (fin || P.landPos).clone(); this.orbitA = Math.atan2(camera.position.x - this.orbitC.x, camera.position.z - this.orbitC.z);
   },
   orbit(dt) {
@@ -1858,9 +2017,14 @@ const Seq = {
     }
     this.reset();
   },
+  abort() { // a ticker switch cancels whatever shot is playing
+    this.pending = null;
+    if (this.state === 'idle' || this.state === 'resetting') return;
+    Later.clear(); this.reset();
+  },
   reset() {
     this.state = 'resetting'; this.rt = 0;
-    Saylor.reset(); hideBanner(); Labels.clear(); Rings.clear();
+    Player.reset(); hideBanner(); Labels.clear(); Rings.clear();
     ball.visible = true; ball.position.copy(BALL_TEE); teePeg.rotation.set(0, 0, 0); teePeg.position.set(0, 0.01, 0); ballGlow.material.opacity = 0;
     Tracer.reveal(Tracer.max); Tracer.opacity(0.45);
     Cam.cut(...VIEW.tee()); setShadowFocus(new V3(-1, 0, -3));
@@ -1888,7 +2052,6 @@ const Seq = {
 /* =====================================================================
    11. SCHEDULER, CONTROLS, MAIN LOOP
    ===================================================================== */
-const QS = new URLSearchParams(location.search);
 const FORCE = QS.get('force') ? QS.get('force').toUpperCase() : null;
 let busy = false;
 async function requestShot(reason = 'auto', forced = null, override = null) {
@@ -1896,6 +2059,7 @@ async function requestShot(reason = 'auto', forced = null, override = null) {
   busy = true; $('btnSwing').disabled = true;
   try {
     const snap = override || (await Feed.snapshot(reason));
+    if (snap.sym && snap.sym !== TK.sym) { $('btnSwing').disabled = Seq.state !== 'idle'; return; } // switched tickers mid-fetch
     UI.ticker(snap); drawBoard(snap, Seq.lastShot);
     const seed = reason === 'auto' && snap.src !== 'DEMO' ? hashStr(`${Math.floor(Date.now() / 60e3)}|${snap.price.toFixed(2)}|${snap.rvol.toFixed(2)}`) : (Math.random() * 2 ** 32) >>> 0;
     Seq.start(planShot(snap, seed, forced || FORCE));
@@ -1939,12 +2103,67 @@ $('rngP').oninput = (e) => { Feed.manual.price = +e.target.value; syncManual(); 
 $('rngV').oninput = (e) => { Feed.manual.rvol = Math.pow(2, +e.target.value); syncManual(); };
 document.querySelectorAll('.presets button').forEach((b) => (b.onclick = () => { Sound.init(); requestShot('preset', null, Feed.scenario(+b.dataset.p, +b.dataset.v)); }));
 $('btnSound').onclick = () => { Sound.init(); Sound.on = !Sound.on; $('btnSound').textContent = Sound.on ? '🔊' : '🔇'; };
-$('btnCam').onclick = () => { camMode = camMode === 'broadcast' ? 'tracer' : 'broadcast'; $('btnCam').textContent = camMode === 'broadcast' ? '🎥' : '🎯'; toast(camMode === 'broadcast' ? 'Camera: TV broadcast (cuts to the landing)' : 'Camera: tracer cam (stays behind Saylor)', 2200); if (Seq.state === 'idle') Seq.idleMode = ''; };
-$('btnPanels').onclick = () => document.body.classList.toggle(innerWidth < 1180 ? 'panels' : 'nopanels');
-addEventListener('keydown', (e) => { if (e.code === 'Space' && e.target.tagName !== 'INPUT' && e.target.tagName !== 'SELECT') { e.preventDefault(); $('btnSwing').click(); } });
+$('btnCam').onclick = () => { camMode = camMode === 'broadcast' ? 'tracer' : 'broadcast'; $('btnCam').textContent = camMode === 'broadcast' ? '🎥' : '🎯'; toast(camMode === 'broadcast' ? 'Camera: TV broadcast (cuts to the landing)' : 'Camera: tracer cam (stays behind the golfer)', 2200); if (Seq.state === 'idle') Seq.idleMode = ''; };
+addEventListener('keydown', (e) => {
+  if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
+  if (e.code === 'Space') { e.preventDefault(); $('btnSwing').click(); }
+  if (e.code === 'KeyH') toggleClean();
+});
 if (['live', 'demo', 'manual'].includes(QS.get('mode'))) setMode(QS.get('mode'));
 if (QS.has('interval')) { Sched.interval = +QS.get('interval') || 0; $('selInt').value = String(Sched.interval); }
 if (QS.has('nodelay') || Sched.interval === 0) Sched.nextAt = Sched.interval ? Sched.nextAt : Infinity;
+
+// ---- panels: every box can be hidden (✕) and brought back from the dock; "Clean view" hides them all ----
+const UIS = Object.assign({ hidden: { formula: true, log: true, map: true }, clean: false, drawer: false, whatif: false }, (() => { try { return JSON.parse(store.get('ui') || '{}'); } catch (e) { return {}; } })());
+function applyUI() {
+  document.querySelectorAll('[data-panel]').forEach((p) => (p.hidden = !!UIS.hidden[p.dataset.panel]));
+  document.querySelectorAll('[data-show]').forEach((b) => (b.hidden = !UIS.hidden[b.dataset.show]));
+  document.body.classList.toggle('clean', UIS.clean);
+  $('drawer').hidden = !UIS.drawer; $('presets').hidden = !UIS.whatif;
+  $('btnGear').classList.toggle('on', UIS.drawer); $('btnWhatIf').classList.toggle('on', UIS.whatif);
+  MM.dirty = true; store.set('ui', JSON.stringify(UIS));
+}
+const toggleClean = () => { UIS.clean = !UIS.clean; applyUI(); if (UIS.clean) toast('Clean view. Tap 👁 Show HUD (or press H) to bring the boxes back.', 2600); };
+document.querySelectorAll('[data-hide]').forEach((b) => (b.onclick = () => { UIS.hidden[b.dataset.hide] = true; applyUI(); }));
+document.querySelectorAll('[data-show]').forEach((b) => (b.onclick = () => { UIS.hidden[b.dataset.show] = false; applyUI(); }));
+$('btnClean').onclick = $('btnShowHud').onclick = toggleClean;
+$('btnGear').onclick = () => { UIS.drawer = !UIS.drawer; applyUI(); };
+$('btnWhatIf').onclick = () => { UIS.whatif = !UIS.whatif; applyUI(); };
+$('miniSwing').onclick = () => $('btnSwing').click();
+new ResizeObserver(() => document.documentElement.style.setProperty('--ctlH', $('controls').offsetHeight + 'px')).observe($('controls'));
+applyUI();
+
+// ---- ticker switch: STRC (Michael Saylor) ⇄ SATA (Matt Cole) ----
+const AVATAR = {
+  saylor: '<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="#2a3240"/><path d="M4 40c1.5-8 7.5-11.5 16-11.5S34.5 32 36 40z" fill="#15171c"/><path d="M16.2 29h7.6L20 40z" fill="#f5f6f8"/><path d="M19 30.2h2l1 9.8h-4z" fill="#f7931a"/><ellipse cx="20" cy="18.5" rx="8.6" ry="10" fill="#e6b59b"/><path d="M11.3 17c-.7-7.4 3.6-10.8 8.9-10.8 5.6 0 9.4 3.3 8.6 10.6-1-4.4-4.2-6.4-8.7-6.4-4.4 0-7.6 2.1-8.8 6.6z" fill="#d4d0c9"/><path d="M12 21c.6 6 3.8 9 8 9s7.4-3 8-9c-1.6 2.3-4.4 2.9-8 2.9S13.6 23.3 12 21z" fill="#e2dfd9"/><circle cx="16.6" cy="18" r="1" fill="#33404d"/><circle cx="23.4" cy="18" r="1" fill="#33404d"/><path d="M17 24.6q3 1.6 6 0" stroke="#8a4a40" stroke-width="1" fill="none" stroke-linecap="round"/></svg>',
+  cole: '<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="#24304a"/><path d="M4 40c1.5-8 7.5-11.5 16-11.5S34.5 32 36 40z" fill="#1f2b45"/><path d="M16.2 29h7.6L20 40z" fill="#dce7f5"/><path d="M19 30.2h2l1 9.8h-4z" fill="#27324c"/><path d="M27 33l3.5-.6.4 1.6-3.6.4z" fill="#2fc58b"/><ellipse cx="20" cy="18.5" rx="8.2" ry="10" fill="#e8b48f"/><path d="M11.8 16.5c-.4-6.6 3.4-9.6 8.4-9.6 5.4 0 8.8 3 8.2 9.6-1.2-3.6-4-5.4-8.2-5.4-4.1 0-7.1 1.6-8.4 5.4z" fill="#3a2e25"/><path d="M11.8 16.5c-.2-1.6 0-3 .5-4.2l.8 3.6zM28.2 16.5c.2-1.6 0-3-.5-4.2l-.8 3.6z" fill="#77716a"/><circle cx="16.8" cy="18.2" r="1" fill="#2b3a40"/><circle cx="23.2" cy="18.2" r="1" fill="#2b3a40"/><path d="M16.4 23.6q3.6 3 7.2 0" stroke="#fff" stroke-width="1.6" fill="none" stroke-linecap="round"/><path d="M16.4 23.6q3.6 3 7.2 0" stroke="#9a5446" stroke-width=".7" fill="none"/></svg>',
+};
+function applyTheme() {
+  const a = TK.acc, root = document.documentElement.style;
+  [['--acc1', a[0]], ['--acc2', a[1]], ['--acc3', a[2]], ['--btc', a[1]], ['--btc2', a[0]]].forEach(([k, v]) => root.setProperty(k, v));
+  tracerMat.color.set(a[1]); tracerGlowMat.color.set(a[0]); landRing.material.color.set(a[1]); $('ring').setAttribute('stroke', a[1]); bagBandMat.color.set(a[1]);
+  coinFaceMat.map = bagLogoMat.map = MAT.emblem.map = COIN[TK.sym]; flagMats[0].map = FLAG[TK.sym].f; flagMats[1].map = FLAG[TK.sym].b;
+  [coinFaceMat, bagLogoMat, MAT.emblem, ...flagMats].forEach((m) => (m.needsUpdate = true));
+  drawSign(); drawBoard(Feed.snap, null); MM.dirty = true;
+  $('brandSym').textContent = TK.sym; $('brandSub').textContent = `Hole 21 · “${TK.hole}” · Par 4 · 330 yds`;
+  $('tSym').textContent = TK.sym; $('tName').textContent = TK.name; $('fSym').textContent = TK.sym; $('lblPName').textContent = `${TK.sym} price`;
+  $('avatar').innerHTML = AVATAR[TK.look]; $('selTicker').value = TK.sym;
+  document.title = `${TK.sym} Open · ${TK.golfer}'s Minute Drive`;
+}
+function setTicker(sym, initial = false) {
+  TK = TICKERS[sym] || TICKERS.STRC; store.set('ticker', TK.sym);
+  Feed.setTicker(TK); applyLook(TK.look); applyTheme();
+  if (initial) return;
+  Seq.abort(); Seq.lastShot = null; LM.reset(); hideBanner();
+  ['tPrice', 'tChg', 'tPar', 'tMinVol', 'tRvol', 'tDayVol'].forEach((id) => ($(id).textContent = '—'));
+  $('tNote').textContent = `Loading ${TK.sym}…`; $('miniQuote').textContent = `${TK.sym} $—`;
+  UI.status(`${TK.golfer} is on the tee`);
+  toast(`Now tracking ${TK.sym} · ${TK.golfer} is on the tee`, 2600);
+  if (Feed.mode === 'manual') UI.ticker(Feed.fromManual()); else refreshTicker();
+  Later.add(1.2, () => requestShot('switch'));
+}
+$('selTicker').onchange = (e) => setTicker(e.target.value);
+setTicker(TK.sym, true);
 
 const pinLabel = Labels.add('PIN<b>330</b>', PIN_POS.clone().setY(3.0), 'pin', true);
 pinLabel.hide = () => camera.position.distanceTo(PIN_POS) < 70 || Seq.state === 'result' || Seq.state === 'celebrate';
@@ -1959,21 +2178,21 @@ const clock = new THREE.Clock(); let elapsed = 0;
 function frame() {
   requestAnimationFrame(frame);
   const dt = Math.min(clock.getDelta(), 0.05); elapsed += dt;
-  Later.update(dt); Seq.update(dt); Saylor.update(dt);
+  Later.update(dt); Seq.update(dt); Player.update(dt);
   fx.update(dt); sparks.update(dt); updateRipples(dt); Rings.update(dt); updateTreeShake(dt);
   waveFlag(elapsed, Seq.state === 'celebrate' || (Seq.P?.holed && Seq.state === 'result') ? 1.7 : 1);
   waterMat.normalMap.offset.set(elapsed * 0.012, elapsed * 0.007);
   Cam.update(dt); sky.position.copy(camera.position); updateBall();
   fx.mat.uniforms.uPx.value = sparks.mat.uniforms.uPx.value = (innerHeight * renderer.getPixelRatio()) / (2 * Math.tan((camera.fov * Math.PI) / 360));
   Labels.update();
-  if (MM.dirty || Seq.state !== 'idle') MM.draw();
+  if (!UIS.hidden.map && !UIS.clean && (MM.dirty || Seq.state !== 'idle')) MM.draw();
   renderer.render(scene, camera);
 }
 refreshTicker();
 countdown(Date.now());
 frame();
 setTimeout(() => $('loading').classList.add('hide'), 250);
-window.STRC = { Seq, Feed, Saylor, Cam, VIEW, planShot, requestShot, swingPose, scene, camera, renderer, TREES, BANDS, decide, carryFromRvol, lieAt };
+window.STRC = { Seq, Feed, Player, Cam, setTicker, applyLook, UIS, TICKERS, get TK() { return TK; }, VIEW, planShot, requestShot, swingPose, scene, camera, renderer, TREES, BANDS, decide, carryFromRvol, lieAt };
 </script>
 </body>
 </html>
