@@ -42,6 +42,16 @@ It's one HTML file (Three.js loads from a CDN). Open `index.html` directly, or s
 python3 -m http.server 8000
 ```
 
+## Shot clips (MP4 for Instagram Stories)
+
+After every drive a **🎬 Save this shot** button appears (it pulses for a hole-in-one), and every entry in the shot log has a 🎬 button. Tapping it replays that shot off-screen at 30 fps and encodes an MP4 right in the browser:
+
+- **📱 Story 9:16** (1080×1920) with the title, golfer, price and volume, result banner, launch numbers and a link end card, all kept inside Instagram's Story safe area. Or **🖥 Wide 16:9** (1920×1080).
+- H.264 video plus AAC audio of the swing, splash and crowd sounds, where the browser supports audio encoding.
+- On a phone, **Share / Save video** opens the share sheet (Save Video, Instagram, Messages). On a computer, **Download MP4**.
+
+Uses WebCodecs and [mp4-muxer](https://github.com/Vanilagy/mp4-muxer); browsers without WebCodecs fall back to recording in real time with MediaRecorder (no audio).
+
 ## Screen
 
 Every box has a ✕ to hide it; hidden boxes become chips under the ticker picker so you can bring them back. **Clean view** (or the H key) hides everything except a small price pill and a swing button. Settings (⚙️) and what-if shots (🎯) fold away inside the controls. Your layout and ticker are remembered.

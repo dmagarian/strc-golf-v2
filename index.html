@@ -69,13 +69,33 @@ button.on{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.32)}
 .swingrow .pmin{align-self:flex-start;width:20px;height:20px}
 #log{padding:11px 12px;flex:1 1 auto;min-height:120px;overflow:hidden;display:flex;flex-direction:column}
 #logList{list-style:none;overflow:hidden;display:flex;flex-direction:column;gap:5px}
-#logList li{display:grid;grid-template-columns:40px 1fr auto;gap:8px;align-items:center;font:500 12px var(--ui);padding:6px 8px;border-radius:8px;background:rgba(255,255,255,.035);animation:slidein .4s ease}
+#logList li{display:grid;grid-template-columns:38px 1fr auto 28px;gap:8px;align-items:center;font:500 12px var(--ui);padding:6px 8px;border-radius:8px;background:rgba(255,255,255,.035);animation:slidein .4s ease}
 #logList li .lt{font:500 10px var(--mono);color:var(--dim)}
 #logList li .lr{font:700 13px/1 var(--cond);letter-spacing:.06em;color:var(--c)}
 #logList li .lr small{display:block;font:500 10px var(--mono);letter-spacing:0;color:var(--mut);margin-top:3px}
 #logList li .lp{font:600 11px var(--mono);text-align:right;color:#d8e1e8}
 #logList li .lp small{display:block;color:var(--dim);font-size:10px}
 #logList li.empty{display:block;background:none;color:var(--dim);font-size:12px;padding:6px 2px}
+#logList .lclip{width:28px;height:28px;padding:0;border-radius:8px;font-size:14px;line-height:1}
+#clipPill{left:50%;top:58%;transform:translateX(-50%);padding:11px 18px;border-radius:999px;border:0;font:800 15px/1 var(--cond);letter-spacing:.08em;color:#101208;background:linear-gradient(135deg,var(--acc1),var(--acc2) 55%,var(--acc3));box-shadow:0 8px 24px rgba(0,0,0,.4);z-index:6;white-space:nowrap}
+#clipPill.hio{animation:pillpulse 1.2s ease-in-out infinite}
+@keyframes pillpulse{50%{box-shadow:0 0 0 6px rgba(255,211,77,.35),0 8px 24px rgba(0,0,0,.4)}}
+#clipPill[hidden],#clipModal[hidden]{display:none !important}
+#clipModal{inset:0;z-index:40;display:grid;place-items:center;background:rgba(5,9,14,.8);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#clipModal .cm{width:min(92vw,440px);max-height:94vh;overflow:auto;padding:14px 16px 16px}
+.cm-fmt{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:4px 0 10px}
+.cm-stage{position:relative;margin:0 auto;aspect-ratio:9/16;height:min(56vh,560px);max-width:100%;border-radius:12px;overflow:hidden;background:#05090e;border:1px solid var(--line)}
+.cm-stage[data-fmt="wide"]{aspect-ratio:16/9;height:auto;width:100%}
+.cm-stage video{display:block;width:100%;height:100%;object-fit:contain;background:#05090e}
+#cmBusy{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:12px;text-align:center;background:rgba(5,9,14,.88);font:600 13px/1.4 var(--ui);color:var(--mut);padding:18px}
+#cmBusy[hidden]{display:none}
+#cmBusy .spin{width:36px;height:36px;border-radius:50%;border:3px solid rgba(255,255,255,.15);border-top-color:var(--acc2);animation:sp 1s linear infinite}
+#cmBusy .bar{width:180px;height:6px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden}
+#cmBusy .bar i{display:block;height:100%;width:0;background:var(--acc2);transition:width .2s}
+.cm-actions{display:grid;gap:8px;margin-top:12px}
+.cm-actions .btnlink{display:block;text-align:center;font:700 13px/1 var(--ui);letter-spacing:.04em;color:var(--ink);text-decoration:none;padding:12px;border-radius:9px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14)}
+.cm-actions .btnlink.off,.cm-actions button:disabled{opacity:.4;pointer-events:none}
+.cm-note{margin-top:10px;font:500 11.5px/1.45 var(--ui);color:var(--mut);text-align:center}
 @keyframes slidein{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
 
 #mapBox{padding:10px 12px 12px;flex:none;margin-top:auto}
@@ -336,6 +356,22 @@ input[type=range]{width:100%;accent-color:var(--btc)}
   </div>
 </div>
 
+<button class="hud" id="clipPill" hidden>🎬 Save this shot</button>
+<div class="hud" id="clipModal" hidden>
+  <div class="cm panel">
+    <div class="ph">🎬 SHOT CLIP <span id="cmTitle">—</span><button class="pmin" id="cmClose" title="Close">✕</button></div>
+    <div class="cm-fmt"><button data-fmt="story">📱 Story 9:16</button><button data-fmt="wide">🖥 Wide 16:9</button></div>
+    <div class="cm-stage" id="cmStage">
+      <video id="cmVideo" playsinline muted loop autoplay></video>
+      <div id="cmBusy"><div class="spin"></div><div id="cmPct">Rendering…</div><div class="bar"><i id="cmBar"></i></div></div>
+    </div>
+    <div class="cm-actions">
+      <button id="cmShare" class="primary">📤 Share / Save video</button>
+      <a id="cmDownload" class="btnlink" download="strc-open.mp4">⬇️ Download MP4</a>
+    </div>
+    <div class="cm-note" id="cmNote">On iPhone, tap Share, then Save Video, then add it to your Instagram Story.</div>
+  </div>
+</div>
 <div class="hud" id="toast"></div>
 <div id="labels"></div>
 <div id="loading"><div><div class="spin"></div>MOWING THE FAIRWAY…</div></div>
@@ -1746,17 +1782,22 @@ const Sound = {
     for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
     this.nb = b;
   },
-  ok() { return this.on && this.ctx && this.ctx.state === 'running'; },
-  noise({ dur = 0.3, type = 'bandpass', f = 1000, f2 = null, q = 1, g = 0.5, a = 0.004, at = 0 } = {}) {
+  capture: null, offline: false,
+  ok() { return this.offline || (this.on && this.ctx && this.ctx.state === 'running'); },
+  noise(o = {}) {
+    if (this.capture) { this.capture.push({ k: 'noise', o, t: Clip.t }); return; } // a clip replay records sounds for its audio track
     if (!this.ok()) return;
+    const { dur = 0.3, type = 'bandpass', f = 1000, f2 = null, q = 1, g = 0.5, a = 0.004, at = 0 } = o;
     const c = this.ctx, t0 = c.currentTime + at, s = c.createBufferSource(), fl = c.createBiquadFilter(), gn = c.createGain();
     s.buffer = this.nb; s.loop = true;
     fl.type = type; fl.frequency.setValueAtTime(f, t0); if (f2) fl.frequency.exponentialRampToValueAtTime(f2, t0 + dur); fl.Q.value = q;
     gn.gain.setValueAtTime(0.0001, t0); gn.gain.exponentialRampToValueAtTime(g, t0 + a); gn.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
     s.connect(fl).connect(gn).connect(this.master); s.start(t0, Math.random() * 1.5); s.stop(t0 + dur + 0.05);
   },
-  tone({ f = 800, f2 = null, dur = 0.2, type = 'sine', g = 0.3, a = 0.003, at = 0 } = {}) {
+  tone(opts = {}) {
+    if (this.capture) { this.capture.push({ k: 'tone', o: opts, t: Clip.t }); return; }
     if (!this.ok()) return;
+    const { f = 800, f2 = null, dur = 0.2, type = 'sine', g = 0.3, a = 0.003, at = 0 } = opts;
     const c = this.ctx, t0 = c.currentTime + at, o = c.createOscillator(), gn = c.createGain();
     o.type = type; o.frequency.setValueAtTime(f, t0); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t0 + dur);
     gn.gain.setValueAtTime(0.0001, t0); gn.gain.exponentialRampToValueAtTime(g, t0 + a); gn.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
@@ -1775,7 +1816,7 @@ const Sound = {
   wood() { this.tone({ f: 260, f2: 180, dur: 0.12, type: 'triangle', g: 0.4 }); this.noise({ dur: 0.1, type: 'bandpass', f: 1200, q: 2, g: 0.35 }); this.noise({ dur: 0.7, type: 'highpass', f: 3000, g: 0.08, a: 0.05, at: 0.05 }); },
   cup() { [0, 0.07, 0.15].forEach((at, i) => this.tone({ f: 1900 - i * 250, dur: 0.05, type: 'square', g: 0.08, at })); },
   crowd(kind) {
-    if (!this.ok()) return;
+    if (!this.capture && !this.ok()) return;
     if (kind === 'groan') { this.noise({ dur: 1.4, type: 'bandpass', f: 520, f2: 260, q: 3, g: 0.22, a: 0.25 }); return; }
     const n = kind === 'roar' ? 380 : 150, D = kind === 'roar' ? 3.4 : 1.8;
     for (let i = 0; i < n; i++) this.noise({ dur: 0.03 + Math.random() * 0.03, type: 'bandpass', f: 900 + Math.random() * 2200, q: 0.9, g: 0.04 + Math.random() * 0.09, a: 0.002, at: Math.random() * D });
@@ -1847,6 +1888,8 @@ function addLog(P) {
   const ul = $('logList'); ul.querySelector('.empty')?.remove();
   const li = document.createElement('li'); li.style.setProperty('--c', OUT[P.type].col);
   li.innerHTML = `<span class="lt">${new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }).replace(/\s?[AP]M$/i, '')}</span><span class="lr">${OUT[P.type].icon} ${P.title.replace(/!/g, '')}<small>${P.type === 'WHIFF' ? '0 yds' : P.type === 'WATER' ? 'in the water' : Math.round(P.m.total) + ' yds'}</small></span><span class="lp">$${P.price.toFixed(2)}<small>${P.snap.sym || TK.sym} · ${P.rvol.toFixed(1)}×</small></span>`;
+  li.insertAdjacentHTML('beforeend', '<button class="lclip" title="Save a video clip of this shot">🎬</button>');
+  li.querySelector('.lclip').onclick = () => Clip.open(P);
   ul.prepend(li); while (ul.children.length > 14) ul.lastChild.remove();
 }
 const MM = { cv: $('minimap'), W: 240, H: 642, X0: -70, X1: 70, D0: -12, D1: 363, histBy: {}, dirty: true, get hist() { return (this.histBy[TK.sym] ||= []); } };
@@ -1902,6 +1945,7 @@ const Seq = {
   state: 'idle', t: 0, P: null, evI: 0, idleT: 0, idleMode: '', modeT: 0, pending: null, lastShot: null,
   start(P) {
     Object.assign(this, { P, t: 0, evI: 0, state: 'swing', cutDone: false, whooshed: false, maxH: 0, hioPush: false, resultT: 0 });
+    if (!this.replay) { P.at = P.at || Date.now(); $('clipPill').hidden = true; }
     Labels.clear(); Rings.clear(); Tracer.clear(); Later.clear();
     ball.visible = true; ball.position.copy(BALL_TEE); teePeg.rotation.set(0, 0, 0); teePeg.position.set(0, 0.01, 0); ballGlow.material.opacity = 0;
     if (P.flightN) Tracer.set(P.path.slice(0, P.flightN).map((s) => s.p));
@@ -1991,8 +2035,9 @@ const Seq = {
     UI.status('HOLE IN ONE! Laser eyes activated.');
   },
   result() {
-    const P = this.P; this.state = 'result'; this.resultT = 0; this.resultDur = P.type === 'HIO' ? 3.6 : 4.4; this.lastShot = P;
-    showBanner(P); LM.final(P); addLog(P); drawBoard(P.snap, P); UI.why(P, true); MM.add(P);
+    const P = this.P; this.state = 'result'; this.resultT = 0; this.resultDur = P.type === 'HIO' ? 3.6 : 4.4;
+    showBanner(P); LM.final(P); UI.why(P, true);
+    if (!this.replay) { this.lastShot = P; addLog(P); drawBoard(P.snap, P); MM.add(P); showClipPill(P); }
     const fin = P.finalPos || P.sunk;
     if (!['WHIFF', 'HIO', 'WATER'].includes(P.type) && fin) { Labels.add(`TOTAL<b>${Math.round(P.m.total)}</b>`, fin.clone().setY(Math.max(fin.y, 0) + 1.2), 'total'); if (fin.distanceTo(P.landPos) > 2.5) Rings.show(restRing, fin); }
     const good = ['GREEN', 'PURE', 'FAIRWAY'].includes(P.type), bad = ['WATER', 'TREES', 'SHANK', 'WHIFF', 'TOP'].includes(P.type);
@@ -2105,7 +2150,7 @@ document.querySelectorAll('.presets button').forEach((b) => (b.onclick = () => {
 $('btnSound').onclick = () => { Sound.init(); Sound.on = !Sound.on; $('btnSound').textContent = Sound.on ? '🔊' : '🔇'; };
 $('btnCam').onclick = () => { camMode = camMode === 'broadcast' ? 'tracer' : 'broadcast'; $('btnCam').textContent = camMode === 'broadcast' ? '🎥' : '🎯'; toast(camMode === 'broadcast' ? 'Camera: TV broadcast (cuts to the landing)' : 'Camera: tracer cam (stays behind the golfer)', 2200); if (Seq.state === 'idle') Seq.idleMode = ''; };
 addEventListener('keydown', (e) => {
-  if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName)) return;
+  if (/INPUT|SELECT|TEXTAREA/.test(e.target.tagName) || !$('clipModal').hidden) return;
   if (e.code === 'Space') { e.preventDefault(); $('btnSwing').click(); }
   if (e.code === 'KeyH') toggleClean();
 });
@@ -2175,24 +2220,307 @@ function onResize() {
 addEventListener('resize', onResize); onResize();
 
 const clock = new THREE.Clock(); let elapsed = 0;
-function frame() {
-  requestAnimationFrame(frame);
-  const dt = Math.min(clock.getDelta(), 0.05); elapsed += dt;
+function stepWorld(dt, viewH) {
+  elapsed += dt;
   Later.update(dt); Seq.update(dt); Player.update(dt);
   fx.update(dt); sparks.update(dt); updateRipples(dt); Rings.update(dt); updateTreeShake(dt);
   waveFlag(elapsed, Seq.state === 'celebrate' || (Seq.P?.holed && Seq.state === 'result') ? 1.7 : 1);
   waterMat.normalMap.offset.set(elapsed * 0.012, elapsed * 0.007);
   Cam.update(dt); sky.position.copy(camera.position); updateBall();
-  fx.mat.uniforms.uPx.value = sparks.mat.uniforms.uPx.value = (innerHeight * renderer.getPixelRatio()) / (2 * Math.tan((camera.fov * Math.PI) / 360));
+  fx.mat.uniforms.uPx.value = sparks.mat.uniforms.uPx.value = viewH / (2 * Math.tan((camera.fov * Math.PI) / 360));
+}
+function frame() {
+  requestAnimationFrame(frame);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  if (Clip.busy) return; // the clip renderer is driving the scene
+  stepWorld(dt, innerHeight * renderer.getPixelRatio());
   Labels.update();
   if (!UIS.hidden.map && !UIS.clean && (MM.dirty || Seq.state !== 'idle')) MM.draw();
   renderer.render(scene, camera);
 }
+/* =====================================================================
+   12. SHOT CLIPS — replay a logged shot off-screen at a fixed 30 fps into a
+       9:16 Story (or 16:9) frame, draw the broadcast graphics into the video,
+       and encode an MP4 in the browser (WebCodecs + mp4-muxer; H.264 + AAC).
+   ===================================================================== */
+const MP4_MUXER = 'https://cdn.jsdelivr.net/npm/mp4-muxer@5.2.2/build/mp4-muxer.mjs';
+const CLIP_FMT = { story: { w: 1080, h: 1920 }, wide: { w: 1920, h: 1080 } };
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+const TYPE_SLUG = { HIO: 'hole-in-one', GREEN: 'drove-the-green', PURE: 'pure', FAIRWAY: 'fairway', ROUGH: 'rough', BUNKER: 'bunker', WATER: 'splash', TREES: 'timber', SHANK: 'shank', TOP: 'topped', WHIFF: 'whiff' };
+function showClipPill(P) {
+  const b = $('clipPill'); b.textContent = P.type === 'HIO' ? '🎬 Save the hole-in-one clip' : '🎬 Save this shot';
+  b.classList.toggle('hio', P.type === 'HIO'); b.hidden = false; b.onclick = () => Clip.open(P);
+}
+const Clip = {
+  busy: false, t: 0, token: 0, P: null, url: null, file: null, cancel: false,
+  fmt: CLIP_FMT[store.get('clipFmt')] ? store.get('clipFmt') : 'story',
+  open(P) {
+    this.P = P; $('clipModal').hidden = false; $('clipPill').hidden = true;
+    $('cmTitle').textContent = `${P.snap.sym || TK.sym} · ${P.title.replace(/!/g, '')}`;
+    this.make();
+  },
+  close() { this.token++; this.cancel = this.busy; $('clipModal').hidden = true; $('cmVideo').pause(); },
+  setFmt(f) { if (f === this.fmt) return; this.fmt = f; store.set('clipFmt', f); this.cancel = this.busy; this.make(); },
+  ui(busy, txt = '', pct = 0) {
+    $('cmBusy').hidden = !busy; $('cmPct').textContent = txt; $('cmBar').style.width = Math.round(pct * 100) + '%';
+    $('cmShare').disabled = busy; $('cmDownload').classList.toggle('off', busy);
+  },
+  async make() {
+    const P = this.P, fmt = this.fmt, my = ++this.token;
+    document.querySelectorAll('#clipModal [data-fmt]').forEach((b) => b.classList.toggle('on', b.dataset.fmt === fmt));
+    $('cmStage').dataset.fmt = fmt; $('cmVideo').removeAttribute('src');
+    this.ui(true, 'Waiting for the current shot to finish…');
+    while (this.busy || busy || Seq.state !== 'idle') { await sleep(200); if (my !== this.token) return; }
+    try {
+      const blob = await renderClip(P, fmt, (pct, txt) => my === this.token && this.ui(true, txt, pct));
+      if (my !== this.token) return;
+      if (this.url) URL.revokeObjectURL(this.url);
+      this.url = URL.createObjectURL(blob);
+      const v = $('cmVideo'); v.src = this.url; v.play().catch(() => {});
+      const d = new Date(P.at || Date.now()), pad = (n) => String(n).padStart(2, '0');
+      const name = `${(P.snap.sym || TK.sym).toLowerCase()}-open-${TYPE_SLUG[P.type]}-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}-${fmt}.${blob.type.includes('mp4') ? 'mp4' : 'webm'}`;
+      $('cmDownload').href = this.url; $('cmDownload').download = name;
+      this.file = new File([blob], name, { type: blob.type });
+      $('cmShare').hidden = !(navigator.canShare && navigator.canShare({ files: [this.file] }));
+      $('cmNote').textContent = $('cmShare').hidden ? `${(blob.size / 1e6).toFixed(1)} MB · ${blob.type.includes('mp4') ? 'MP4' : 'WebM'}. Download it, then post it to your Instagram Story.`
+        : 'On iPhone, tap Share, then Save Video, then add it to your Instagram Story.';
+      this.ui(false);
+    } catch (e) {
+      if (my !== this.token || e.message === 'cancelled') return;
+      console.error(e); this.ui(true, 'Could not make the clip: ' + e.message, 0);
+    }
+  },
+  async share() {
+    if (!this.file) return;
+    try { await navigator.share({ files: [this.file], title: `${TK.sym} Open`, text: 'Every minute, live: https://dmagarian.github.io/strc-golf-v2/' }); }
+    catch (e) { if (e.name !== 'AbortError') toast('Sharing failed. Use Download instead.'); }
+  },
+};
+$('cmClose').onclick = () => Clip.close();
+$('cmShare').onclick = () => Clip.share();
+document.querySelectorAll('#clipModal [data-fmt]').forEach((b) => (b.onclick = () => Clip.setFmt(b.dataset.fmt)));
+$('clipModal').onclick = (e) => { if (e.target === $('clipModal')) Clip.close(); };
+
+async function pickVideoConfig(w, h, fps) {
+  for (const codec of ['avc1.640028', 'avc1.4d0028', 'avc1.420028', 'avc1.640032']) {
+    const cfg = { codec, width: w, height: h, bitrate: 9e6, framerate: fps, avc: { format: 'avc' } };
+    try { if ((await VideoEncoder.isConfigSupported(cfg)).supported) return cfg; } catch (e) { /* try the next profile */ }
+  }
+  return null;
+}
+async function renderClip(P, fmt, progress) {
+  const { w: Wd, h: Ht } = CLIP_FMT[fmt], FPS = 30, dt = 1 / FPS;
+  const vcfg = typeof VideoEncoder !== 'undefined' && !QS.has('clipfallback') ? await pickVideoConfig(Wd, Ht, FPS) : null;
+  await Promise.all(['800 92px "Barlow Condensed"', 'italic 900 150px "Barlow Condensed"', '600 30px Inter', '700 30px "JetBrains Mono"'].map((f) => document.fonts.load(f).catch(() => {})));
+  const sym = P.snap.sym || TK.sym, av = new Image();
+  av.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(AVATAR[TICKERS[sym].look].replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" '));
+  await av.decode().catch(() => {});
+  const cv = document.createElement('canvas'); cv.width = Wd; cv.height = Ht; const g = cv.getContext('2d');
+  const last = document.createElement('canvas'); last.width = Wd; last.height = Ht;
+  const est = Math.ceil((T_IMP + (P.restT || 1.3) + (P.type === 'HIO' ? 8.2 : 4.4) + 2) * FPS);
+  let enc = null, encErr = null, rec = null, track = null, mime = '';
+  const vChunks = [], recChunks = [];
+  if (vcfg) {
+    enc = new VideoEncoder({ output: (chunk, meta) => vChunks.push({ chunk, meta }), error: (e) => (encErr = e) });
+    enc.configure(vcfg);
+  } else if (typeof MediaRecorder !== 'undefined' && cv.captureStream) {
+    mime = ['video/mp4;codecs=avc1', 'video/mp4', 'video/webm;codecs=vp9', 'video/webm'].find((m) => MediaRecorder.isTypeSupported(m)) || '';
+    const stream = cv.captureStream(0); track = stream.getVideoTracks()[0];
+    rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 9e6 }); rec.ondataavailable = (e) => e.data.size && recChunks.push(e.data); rec.start(250);
+  } else throw new Error('this browser cannot record video');
+
+  // take over the scene: pause the live loop, size the renderer to the clip, replay the shot
+  const keep = { pr: renderer.getPixelRatio(), tk: TK, cam: camMode };
+  Clip.busy = true; Clip.cancel = false; Clip.t = 0; Sound.capture = [];
+  let frames = 0, events = [];
+  try {
+    if (sym !== TK.sym) { TK = TICKERS[sym]; applyLook(TK.look); applyTheme(); }
+    camMode = 'broadcast'; $('stage').style.visibility = 'hidden';
+    renderer.setPixelRatio(1); renderer.setSize(Wd, Ht, false);
+    camera.aspect = Wd / Ht; camera.updateProjectionMatrix(); tracerMat.resolution.set(Wd, Ht); tracerGlowMat.resolution.set(Wd, Ht);
+    Labels.clear(); Rings.clear(); Later.clear();
+    Seq.replay = true; Seq.start(P);
+    const OUTRO = Math.round(1.8 * FPS), MAX = 50 * FPS, t0 = performance.now();
+    let outro = 0;
+    while (frames < MAX) {
+      if (Clip.cancel) throw new Error('cancelled');
+      if (encErr) throw encErr;
+      const playing = Seq.state !== 'resetting' && Seq.state !== 'idle';
+      if (playing) {
+        stepWorld(dt, Ht); Clip.t += dt;
+        renderer.render(scene, camera); g.drawImage(renderer.domElement, 0, 0, Wd, Ht);
+        drawClipGraphics(g, P, Wd, Ht, av);
+        last.getContext('2d').drawImage(cv, 0, 0);
+      } else {
+        if (outro >= OUTRO) break;
+        g.drawImage(last, 0, 0); drawClipOutro(g, P, Wd, Ht, outro / OUTRO); outro++;
+      }
+      if (enc) {
+        const vf = new VideoFrame(cv, { timestamp: Math.round((frames * 1e6) / FPS), duration: Math.round(1e6 / FPS) });
+        enc.encode(vf, { keyFrame: frames % (FPS * 2) === 0 }); vf.close();
+        while (enc.encodeQueueSize > 6) await sleep(3);
+      } else {
+        track.requestFrame?.();
+        const due = t0 + ((frames + 1) * 1000) / FPS; await sleep(Math.max(0, due - performance.now())); // real-time pacing for MediaRecorder
+      }
+      frames++;
+      if (frames % 5 === 0) { progress(Math.min(0.9, frames / est), `Rendering your ${fmt === 'story' ? 'Story' : 'clip'}… ${Math.round(Math.min(90, (frames / est) * 90))}%`); await sleep(0); }
+    }
+  } finally {
+    events = Sound.capture || []; Sound.capture = null; Seq.replay = false;
+    if (Seq.state !== 'resetting' && Seq.state !== 'idle') Seq.reset();
+    renderer.setPixelRatio(keep.pr); onResize(); camMode = keep.cam; $('stage').style.visibility = '';
+    if (TK !== keep.tk) { TK = keep.tk; applyLook(TK.look); applyTheme(); }
+    Clip.busy = false;
+    if (Clip.cancel) { enc?.close(); rec?.state === 'recording' && rec.stop(); }
+  }
+  if (rec) { await new Promise((r) => { rec.onstop = r; rec.stop(); }); return new Blob(recChunks, { type: mime.split(';')[0] || 'video/webm' }); }
+
+  progress(0.92, 'Adding the sound…');
+  await enc.flush(); enc.close(); if (encErr) throw encErr;
+  const dur = frames / FPS;
+  let aChunks = [], acfg = { codec: 'mp4a.40.2', sampleRate: 48000, numberOfChannels: 2, bitrate: 128000 };
+  try {
+    const ok = typeof AudioEncoder !== 'undefined' && (await AudioEncoder.isConfigSupported(acfg)).supported;
+    if (ok && events.length) aChunks = await encodeAudio(await renderSfx(events, dur), acfg);
+  } catch (e) { console.warn('clip audio skipped', e); aChunks = []; }
+  progress(0.97, 'Packing the MP4…');
+  const { Muxer, ArrayBufferTarget } = await import(MP4_MUXER);
+  const muxer = new Muxer({
+    target: new ArrayBufferTarget(), fastStart: 'in-memory', firstTimestampBehavior: 'offset',
+    video: { codec: 'avc', width: Wd, height: Ht },
+    ...(aChunks.length ? { audio: { codec: 'aac', numberOfChannels: 2, sampleRate: 48000 } } : {}),
+  });
+  for (let v = 0, a = 0; v < vChunks.length || a < aChunks.length;) { // interleave the tracks by time
+    if (a >= aChunks.length || (v < vChunks.length && vChunks[v].chunk.timestamp <= aChunks[a].chunk.timestamp)) { muxer.addVideoChunk(vChunks[v].chunk, vChunks[v].meta); v++; }
+    else { muxer.addAudioChunk(aChunks[a].chunk, aChunks[a].meta); a++; }
+  }
+  muxer.finalize();
+  progress(1, 'Done');
+  return new Blob([muxer.target.buffer], { type: 'video/mp4' });
+}
+async function renderSfx(events, dur) {
+  const sr = 48000, ctx = new OfflineAudioContext(2, Math.ceil(sr * (dur + 0.25)), sr);
+  const keep = { ctx: Sound.ctx, master: Sound.master, nb: Sound.nb };
+  try {
+    Sound.ctx = ctx; Sound.offline = true;
+    Sound.master = ctx.createGain(); Sound.master.gain.value = 0.7; Sound.master.connect(ctx.destination);
+    const n = sr * 2, b = ctx.createBuffer(1, n, sr), d = b.getChannelData(0); for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+    Sound.nb = b;
+    for (const e of events) if (e.t < dur) Sound[e.k]({ ...e.o, at: e.t + (e.o.at || 0) });
+  } finally { Object.assign(Sound, keep); Sound.offline = false; }
+  return ctx.startRendering();
+}
+async function encodeAudio(buf, cfg) {
+  const out = []; let err = null;
+  const enc = new AudioEncoder({ output: (chunk, meta) => out.push({ chunk, meta }), error: (e) => (err = e) });
+  enc.configure(cfg);
+  const n = buf.length, c0 = buf.getChannelData(0), c1 = buf.numberOfChannels > 1 ? buf.getChannelData(1) : c0, step = 4800;
+  for (let i = 0; i < n; i += step) {
+    const k = Math.min(step, n - i), data = new Float32Array(k * 2); data.set(c0.subarray(i, i + k), 0); data.set(c1.subarray(i, i + k), k);
+    const ad = new AudioData({ format: 'f32-planar', sampleRate: buf.sampleRate, numberOfFrames: k, numberOfChannels: 2, timestamp: Math.round((i / buf.sampleRate) * 1e6), data });
+    enc.encode(ad); ad.close();
+  }
+  await enc.flush(); enc.close(); if (err) throw err;
+  return out;
+}
+
+// ---- broadcast graphics drawn into the clip (kept inside Instagram's Story safe area) ----
+function rrect(g, x, y, w, h, r) { g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath(); }
+function clipLogo(g, x, y, s) {
+  const gr = g.createLinearGradient(x, y, x + s, y + s); gr.addColorStop(0, TK.acc[0]); gr.addColorStop(0.5, TK.acc[1]); gr.addColorStop(1, TK.acc[2]);
+  rrect(g, x, y, s, s, s * 0.24); g.fillStyle = gr; g.fill();
+  g.strokeStyle = '#1b1000'; g.lineWidth = s * 0.07; g.lineCap = 'round'; g.beginPath(); g.moveTo(x + s * 0.34, y + s * 0.18); g.lineTo(x + s * 0.34, y + s * 0.84); g.stroke();
+  g.fillStyle = '#fff'; g.beginPath(); g.moveTo(x + s * 0.37, y + s * 0.2); g.lineTo(x + s * 0.8, y + s * 0.36); g.lineTo(x + s * 0.37, y + s * 0.52); g.closePath(); g.fill();
+}
+function drawClipGraphics(g, P, W, H, av) {
+  const story = H > W, u = Math.min(W, H) / 1080, sym = P.snap.sym || TK.sym, tk = TICKERS[sym], acc = tk.acc[1];
+  g.save(); g.textBaseline = 'alphabetic';
+  // scrims so the white type always reads
+  let gr = g.createLinearGradient(0, 0, 0, H * (story ? 0.34 : 0.3)); gr.addColorStop(0, 'rgba(5,9,14,0.62)'); gr.addColorStop(1, 'rgba(5,9,14,0)');
+  g.fillStyle = gr; g.fillRect(0, 0, W, H * 0.34);
+  gr = g.createLinearGradient(0, H, 0, H * 0.68); gr.addColorStop(0, 'rgba(5,9,14,0.7)'); gr.addColorStop(1, 'rgba(5,9,14,0)');
+  g.fillStyle = gr; g.fillRect(0, H * 0.68, W, H * 0.32);
+  // title block
+  const title = `${sym} `, tSize = Math.round((story ? 96 : 76) * u), lg = Math.round((story ? 92 : 74) * u);
+  g.font = `800 ${tSize}px "Barlow Condensed", sans-serif`;
+  const w1 = g.measureText(title).width, w2 = g.measureText('OPEN').width, blockW = lg + 22 * u + w1 + w2;
+  const bx = story ? (W - blockW) / 2 : 56 * u, by = story ? 262 * u : 48 * u;
+  clipLogo(g, bx, by, lg);
+  g.fillStyle = '#fff'; g.shadowColor = 'rgba(0,0,0,.5)'; g.shadowBlur = 12 * u; g.textAlign = 'left';
+  g.fillText(title, bx + lg + 22 * u, by + lg * 0.8); g.fillStyle = acc; g.fillText('OPEN', bx + lg + 22 * u + w1, by + lg * 0.8);
+  g.font = `600 ${Math.round(27 * u)}px "Barlow Condensed", sans-serif`; g.fillStyle = '#dfe7ee';
+  const sub = `HOLE 21 · “${tk.hole.toUpperCase()}” · PAR 4 · 330 YDS`;
+  g.textAlign = story ? 'center' : 'left'; g.fillText(sub, story ? W / 2 : bx, by + lg + 42 * u); g.shadowBlur = 0;
+  // golfer + price chip
+  const d = P.price - PAR, parCol = d >= -0.5 ? '#3ddc84' : d >= -2.5 ? '#f2c14e' : d >= -10 ? '#ff9a4b' : '#ff5d5d';
+  const name = tk.golfer.toUpperCase(), price = `${sym} $${P.price.toFixed(2)}`, par = `${d >= 0 ? '+' : '−'}$${Math.abs(d).toFixed(2)} vs par`, vol = `vol ${P.rvol.toFixed(1)}×${P.rvol >= 3 ? ' 🔥' : ''}`;
+  g.font = `700 ${Math.round(30 * u)}px "Barlow Condensed", sans-serif`; const wn = g.measureText(name + '   ').width;
+  g.font = `700 ${Math.round(27 * u)}px "JetBrains Mono", monospace`; const wp = g.measureText(price + '  ').width, wq = g.measureText(par + '  ').width, wv = g.measureText(vol).width;
+  const ch = 64 * u, cw = ch + 14 * u + wn + wp + wq + wv + 26 * u, cx = story ? (W - cw) / 2 : W - cw - 56 * u, cy = story ? by + lg + 72 * u : 52 * u;
+  rrect(g, cx, cy, cw, ch, ch / 2); g.fillStyle = 'rgba(9,15,23,.78)'; g.fill(); g.strokeStyle = 'rgba(255,255,255,.14)'; g.lineWidth = 2 * u; g.stroke();
+  g.save(); g.beginPath(); g.arc(cx + ch / 2, cy + ch / 2, ch / 2 - 5 * u, 0, 6.283); g.clip(); if (av.complete && av.naturalWidth) g.drawImage(av, cx + 5 * u, cy + 5 * u, ch - 10 * u, ch - 10 * u); g.restore();
+  g.beginPath(); g.arc(cx + ch / 2, cy + ch / 2, ch / 2 - 5 * u, 0, 6.283); g.strokeStyle = acc; g.lineWidth = 3 * u; g.stroke();
+  let x = cx + ch + 14 * u; const ty = cy + ch * 0.66; g.textAlign = 'left';
+  g.font = `700 ${Math.round(30 * u)}px "Barlow Condensed", sans-serif`; g.fillStyle = '#fff'; g.fillText(name, x, ty); x += wn;
+  g.font = `700 ${Math.round(27 * u)}px "JetBrains Mono", monospace`; g.fillStyle = '#fff'; g.fillText(price, x, ty); x += wp;
+  g.fillStyle = parCol; g.fillText(par, x, ty); x += wq; g.fillStyle = P.rvol >= 3 ? '#ffd34d' : '#9fb0bf'; g.fillText(vol, x, ty);
+  // floating tags (CARRY / TOTAL / PIN), projected from 3D like the live HUD
+  const pv = new V3();
+  for (const L of Labels.list) {
+    if (L.hide && L.hide()) continue;
+    pv.copy(L.pos).project(camera); if (pv.z > 1 || Math.abs(pv.x) > 1.05 || Math.abs(pv.y) > 1.05) continue;
+    const sx = (pv.x * 0.5 + 0.5) * W, sy = (-pv.y * 0.5 + 0.5) * H, txt = L.el.textContent.replace(/(\D)(\d)/, '$1 $2'), fs = Math.round((L.sticky ? 20 : 30) * u);
+    g.font = `700 ${fs}px "Barlow Condensed", sans-serif`; const tw = g.measureText(txt).width + 26 * u, th = fs + 18 * u;
+    rrect(g, sx - tw / 2, sy - th * 1.6, tw, th, 8 * u); g.fillStyle = 'rgba(9,15,23,.82)'; g.fill(); g.strokeStyle = L.el.classList.contains('total') ? '#fff' : L.sticky ? 'rgba(255,255,255,.55)' : acc; g.lineWidth = 2 * u; g.stroke();
+    g.fillStyle = '#fff'; g.textAlign = 'center'; g.fillText(txt, sx, sy - th * 1.6 + th * 0.72);
+  }
+  // result banner
+  if (Seq.state === 'result' || Seq.state === 'celebrate') {
+    const k = Seq.state === 'celebrate' ? 1 : easeOut3(Math.min(1, Seq.resultT / 0.35)), col = OUT[P.type].col, cyB = H * (story ? 0.44 : 0.36);
+    g.save(); g.globalAlpha = k; g.translate(W / 2, cyB); g.scale(0.85 + 0.15 * k, 0.85 + 0.15 * k); g.textAlign = 'center';
+    const bt = P.title, bs = Math.round((story ? 150 : 132) * u) * (bt.length > 12 ? 0.82 : 1);
+    g.font = `italic 900 ${Math.round(bs)}px "Barlow Condensed", sans-serif`; g.shadowColor = col; g.shadowBlur = 40 * u; g.fillStyle = '#fff'; g.fillText(bt, 0, 0); g.shadowBlur = 0;
+    g.font = `800 ${Math.round(34 * u)}px "Barlow Condensed", sans-serif`; const sw = g.measureText(P.sub).width + 40 * u, sh = 58 * u;
+    rrect(g, -sw / 2, 24 * u, sw, sh, 10 * u); g.fillStyle = col; g.fill(); g.fillStyle = '#0b1118'; g.fillText(P.sub, 0, 24 * u + sh * 0.7);
+    g.restore();
+  }
+  // launch monitor strip
+  const cells = [['BALL SPEED', $('mBall').textContent, 'mph'], ['CARRY', $('mCarry').textContent, 'yds'], ['TOTAL', $('mTotal').textContent, 'yds'], ['OFFLINE', $('mOff').textContent, 'yds']];
+  const lw = story ? 940 * u : 980 * u, lh = 132 * u, lx = (W - lw) / 2, ly = story ? 1452 * u : H - lh - 74 * u;
+  rrect(g, lx, ly, lw, lh, 18 * u); g.fillStyle = 'rgba(9,15,23,.8)'; g.fill(); g.strokeStyle = 'rgba(255,255,255,.12)'; g.lineWidth = 2 * u; g.stroke();
+  cells.forEach(([lab, val, unit], i) => {
+    const cxl = lx + (lw / 4) * (i + 0.5); g.textAlign = 'center';
+    if (i) { g.fillStyle = 'rgba(255,255,255,.1)'; g.fillRect(lx + (lw / 4) * i, ly + 18 * u, 2 * u, lh - 36 * u); }
+    g.font = `600 ${Math.round(20 * u)}px Inter, sans-serif`; g.fillStyle = '#8fa1b1'; g.fillText(lab, cxl, ly + 36 * u);
+    g.font = `700 ${Math.round(46 * u)}px "JetBrains Mono", monospace`; g.fillStyle = i === 1 || i === 2 ? tk.acc[0] : '#fff'; g.fillText(val, cxl, ly + 88 * u);
+    g.font = `500 ${Math.round(18 * u)}px Inter, sans-serif`; g.fillStyle = '#6b7c8c'; g.fillText(unit, cxl, ly + 114 * u);
+  });
+  // footer
+  const when = new Date(P.at || Date.now()).toLocaleString('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) + ' ET';
+  g.textAlign = 'center'; g.font = `600 ${Math.round(26 * u)}px Inter, sans-serif`; g.fillStyle = 'rgba(255,255,255,.9)';
+  g.fillText(`▶ Live every minute · dmagarian.github.io/strc-golf-v2`, W / 2, story ? 1640 * u : H - 26 * u);
+  if (story) { g.font = `500 ${Math.round(22 * u)}px "JetBrains Mono", monospace`; g.fillStyle = 'rgba(255,255,255,.6)'; g.fillText(`${when} · ${P.snap.src === 'SCENARIO' ? 'what-if shot' : P.snap.src.toLowerCase() + ' data'}`, W / 2, 1680 * u); }
+  g.restore();
+}
+function drawClipOutro(g, P, W, H, k) {
+  const story = H > W, u = Math.min(W, H) / 1080, e = easeOut3(Math.min(1, k * 1.6)), sym = P.snap.sym || TK.sym, tk = TICKERS[sym];
+  g.save(); g.fillStyle = `rgba(5,9,14,${0.82 * e})`; g.fillRect(0, 0, W, H); g.globalAlpha = e; g.textAlign = 'center';
+  const cy = H / 2, lg = 120 * u; clipLogo(g, W / 2 - lg / 2, cy - lg - 150 * u, lg);
+  g.font = `800 ${Math.round(130 * u)}px "Barlow Condensed", sans-serif`; const w1 = g.measureText(`${sym} `).width, w2 = g.measureText('OPEN').width;
+  g.textAlign = 'left'; g.fillStyle = '#fff'; g.fillText(`${sym} `, W / 2 - (w1 + w2) / 2, cy); g.fillStyle = tk.acc[1]; g.fillText('OPEN', W / 2 - (w1 + w2) / 2 + w1, cy);
+  g.textAlign = 'center'; g.font = `800 ${Math.round(44 * u)}px "Barlow Condensed", sans-serif`; g.fillStyle = OUT[P.type].col;
+  g.fillText(`${P.title.replace(/!/g, '')} · ${tk.golfer.toUpperCase()} · $${P.price.toFixed(2)}`, W / 2, cy + 74 * u);
+  g.font = `600 ${Math.round(32 * u)}px Inter, sans-serif`; g.fillStyle = '#dfe7ee'; g.fillText('A new drive every minute, live with the market', W / 2, cy + 150 * u);
+  g.font = `700 ${Math.round(34 * u)}px "JetBrains Mono", monospace`; g.fillStyle = tk.acc[0]; g.fillText('dmagarian.github.io/strc-golf-v2', W / 2, cy + 206 * u);
+  g.restore();
+}
+
 refreshTicker();
 countdown(Date.now());
 frame();
 setTimeout(() => $('loading').classList.add('hide'), 250);
-window.STRC = { Seq, Feed, Player, Cam, setTicker, applyLook, UIS, TICKERS, get TK() { return TK; }, VIEW, planShot, requestShot, swingPose, scene, camera, renderer, TREES, BANDS, decide, carryFromRvol, lieAt };
+window.STRC = { Clip, SHOTS: () => Seq.lastShot, Seq, Feed, Player, Cam, setTicker, applyLook, UIS, TICKERS, get TK() { return TK; }, VIEW, planShot, requestShot, swingPose, scene, camera, renderer, TREES, BANDS, decide, carryFromRvol, lieAt };
 </script>
 </body>
 </html>
